@@ -18,6 +18,9 @@
             }
 
         }
+        else{
+            regAlert.innerText=`Pola nie mogą być puste`;
+        }
     })
     
     
