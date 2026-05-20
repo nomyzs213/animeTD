@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rejestracja</title>
+    <link rel="stylesheet" href="register-style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&family=Shippori+Antique&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    
+
+    <div id="reg-box">
+         <h1 id="reg-title">Rejestracja</h1>
+        <div class="reg-row">
+            <label>podaj email</label>
+            <input type="email" class="reg-el" placeholder="wpisz email" name="email">
+        </div>
+
+        <div class="reg-row">
+            <label>podaj nazwę użytkownika</label>
+            <input type="text" class="reg-el" placeholder="wpisz nazwę użytkownika" name="username">
+        </div>
+
+        <div class="reg-row">
+            <label>podaj hasło</label>
+            <input type="password" class="reg-el" placeholder="********" name="password">
+        </div>
+
+        <div class="reg-row">
+            <label>powtórz hasło</label>
+            <input type="password" class="reg-el" placeholder="********" name="password-repeat">
+        </div>
+
+        <button name="reg-button" >Zarejestruj się</button>
+        <p> <a href="../login/login.html"> Masz juz konto ? Zaloguj się </a></p>
+        <p id="reg-alert"> </p>
+    </div>
+    <script src="formCheck.js"></script>
+</body>
+</html>

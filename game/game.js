@@ -1,2 +1,10 @@
+document.getElementById("button").addEventListener("click", async () => {
 
-document.getElementById("button").addEventListener("click", startGame);
+    const response = await fetch("click.php", {
+        method: "POST"
+    });
+
+    const data = await response.json();
+
+    document.getElementById("clicks").textContent = data.clicks;
+});

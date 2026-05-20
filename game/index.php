@@ -2,14 +2,15 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Clicker</title>
 </head>
 <body>
-    
 
-<div id="button"></div>
+<button id="button">Kliknij</button>
+
+<p>Kliknięcia: <span id="clicks">0</span></p>
 
 <script src="game.js"></script>
+
 </body>
 </html>
