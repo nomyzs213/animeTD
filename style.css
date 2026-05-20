@@ -1,0 +1,189 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: sans-serif;
+    background-color: #f5f6fa;
+    color: #2f3542;
+    height: 100vh;
+}
+
+.game-container {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+}
+
+.clicker-section {
+    flex: 7;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 20px;
+}
+
+.score-container {
+    margin-bottom: 30px;
+    font-size: 24px;
+    position: fixed;
+    top: 1vw;
+    left: 1vw;
+    background-color: rgba(255, 255, 255, 0.85);
+    padding: 10px 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+h2 {
+    color: #2f3542;
+}
+
+.anime-click-button {
+    width: 440px;
+    height: 500px;
+    background-image: url(click.png);
+    color: #ffffff;
+    font-weight: bold;
+    border-radius: 5%;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.anime-click-button:active {
+    transform: scale(0.95);
+}
+
+.upgrades-section {
+    flex: 3;
+    background-color: #e8f4fd;
+    border-left: 2px solid #ced6e0;
+    padding: 20px;
+    color: #2f3542;
+}
+
+.upgrades-section h3 {
+    margin-bottom: 20px;
+    text-align: center;
+    color: #57606f;
+}
+
+.upgrades-list {
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+button {
+    background-color: #7bed9f;
+    color: #1e3799;
+    font-weight: 600;
+    cursor: pointer;
+    width: 90%;
+    padding: 12px;
+    text-align: center;
+    border: none;
+    border-radius: 8px;
+    list-style-position: inside;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+button:hover {
+    background-color: #59ac73; 
+    transform: scale(1.05);
+}
+button:active {
+    background-color: #428f59; 
+    animation: clickShake 0.2s ease;
+    transform: scale(0.95) rotate(3deg); 
+    box-shadow: 0 0 25px 10px #ffd700, inset 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+@keyframes clickShake {
+    0% { transform: scale(1) rotate(0deg); }
+    25% { transform: scale(0.95) rotate(-4deg); }
+    75% { transform: scale(0.95) rotate(4deg); }
+    100% { transform: scale(0.95) rotate(2deg); }
+}
+.login-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(232, 244, 253, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+.login-box {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 450px;
+    width: 90%;
+}
+
+.login-box h1 {
+    color: #ff6b81;
+    font-size: 28px;
+    margin-bottom: 15px;
+}
+
+.login-box p {
+    color: #2f3542;
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+
+.login-box .login-subtext {
+    color: #57606f;
+    font-size: 14px;
+    margin-bottom: 25px;
+}
+.login-btn {
+    background-color: #7bed9f;
+    color: #1e3799;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+    padding: 14px;
+    text-align: center;
+    border: none;
+    border-radius: 8px;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.login-btn:hover {
+    background-color: #59ac73; 
+    transform: scale(1.03);
+}
+
+.login-btn:active {
+    background-color: #428f59; 
+    transform: scale(0.97);
+}
