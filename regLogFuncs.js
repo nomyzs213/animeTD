@@ -7,8 +7,6 @@ export function validateEmail(email) {
 export function addAlert(container, textToAdd) { 
     const alert = document.createElement("p");
     alert.textContent = textToAdd;
-    alert.style.color = "red";
-    alert.style.textAlign = "center";
     container.appendChild(alert);
 }
 

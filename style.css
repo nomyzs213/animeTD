@@ -13,6 +13,7 @@ body {
     background-color: #f5f6fa;
     color: #2f3542;
     height: 100vh;
+    overflow: hidden;
 }
 
 .game-container {
@@ -35,12 +36,13 @@ body {
     margin-bottom: 30px;
     font-size: 24px;
     position: fixed;
-    top: 1vw;
+    bottom: 1vw;
     left: 1vw;
     background-color: rgba(255, 255, 255, 0.85);
     padding: 10px 15px;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    z-index: 10;
 }
 
 h2 {
@@ -50,7 +52,11 @@ h2 {
 .anime-click-button {
     width: 440px;
     height: 500px;
+    max-width: 90vw;
+    max-height: 60vh;
     background-image: url(click.png);
+    background-size: cover;
+    background-position: center;
     color: #ffffff;
     font-weight: bold;
     border-radius: 5%;
@@ -60,11 +66,11 @@ h2 {
     align-items: center;
     cursor: pointer;
     user-select: none;
-    transition: transform 0.3s, box-shadow 0.3s;
+    transition: transform 0.1s, box-shadow 0.3s;
 }
 
 .anime-click-button:active {
-    transform: scale(0.95);
+    transform: scale(0.98);
 }
 
 .upgrades-section {
@@ -73,6 +79,7 @@ h2 {
     border-left: 2px solid #ced6e0;
     padding: 20px;
     color: #2f3542;
+    overflow-y: auto;
 }
 
 .upgrades-section h3 {
@@ -82,67 +89,74 @@ h2 {
 }
 
 .upgrades-list {
-    padding-left: 20px;
+    padding: 0;
+    list-style: none;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
     gap: 15px;
+    align-items: center;
 }
 
-button {
+.upgrades-list button {
     background-color: #7bed9f;
     color: #1e3799;
     font-weight: 600;
     cursor: pointer;
-    width: 90%;
+    width: 100%;
+    max-width: 300px;
     padding: 12px;
     text-align: center;
     border: none;
     border-radius: 8px;
-    list-style-position: inside;
     transition: all 0.2s ease-in-out;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
-button:hover {
+.upgrades-list button:hover {
     background-color: #59ac73; 
-    transform: scale(1.05);
+    transform: scale(1.03);
 }
-button:active {
+
+.upgrades-list button:active {
     background-color: #428f59; 
     animation: clickShake 0.2s ease;
-    transform: scale(0.95) rotate(3deg); 
-    box-shadow: 0 0 25px 10px #ffd700, inset 0 0 10px rgba(255, 215, 0, 0.5);
+    transform: scale(0.97); 
+    box-shadow: 0 0 15px 5px #ffd700;
 }
 
 @keyframes clickShake {
     0% { transform: scale(1) rotate(0deg); }
-    25% { transform: scale(0.95) rotate(-4deg); }
-    75% { transform: scale(0.95) rotate(4deg); }
-    100% { transform: scale(0.95) rotate(2deg); }
+    25% { transform: scale(0.97) rotate(-2deg); }
+    75% { transform: scale(0.97) rotate(2deg); }
+    100% { transform: scale(0.97) rotate(0deg); }
 }
+
+/* OKIENKO LOGOWANIA */
 .login-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(232, 244, 253, 0.85);
-    backdrop-filter: blur(8px);
+    background-color: rgba(232, 244, 253, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 9999;
 }
+
 .login-box {
+    position: relative;
     background-color: #ffffff;
     padding: 40px;
     border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
     text-align: center;
     max-width: 450px;
     width: 90%;
+    border: 1px solid rgba(0,0,0,0.05);
 }
 
 .login-box h1 {
@@ -163,7 +177,9 @@ button:active {
     font-size: 14px;
     margin-bottom: 25px;
 }
+
 .login-btn {
+    display: block;
     background-color: #7bed9f;
     color: #1e3799;
     font-weight: 600;
@@ -175,15 +191,147 @@ button:active {
     border: none;
     border-radius: 8px;
     transition: all 0.2s ease-in-out;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    margin-bottom: 15px;
 }
 
 .login-btn:hover {
     background-color: #59ac73; 
-    transform: scale(1.03);
+    transform: scale(1.02);
 }
 
 .login-btn:active {
     background-color: #428f59; 
-    transform: scale(0.97);
+    transform: scale(0.98);
+}
+
+.register-link {
+    display: inline-block;
+    color: #57606f;
+    font-size: 14px;
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+    margin-top: 5px;
+}
+
+.register-link:hover {
+    color: #ff6b81;
+    text-decoration: underline;
+}
+
+/* PRZYCISK ZAMKNIĘCIA W OKIENKU */
+.login-box form {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: #57606f;
+    font-size: 32px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 5px;
+    transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
+    width: auto;
+    box-shadow: none;
+    position: fixed;
+    top: 10px;
+    right: 10px;
+}
+
+.close-btn:hover {
+    color: #ff6b81;
+    transform: scale(1.15);
+    background: none;
+}
+
+.close-btn:active {
+    transform: scale(0.95);
+    background: none;
+    animation: none;
+    box-shadow: none;
+}
+
+/* RESPONSYWNOŚĆ (MEDIA QUERIES) */
+@media (max-width: 768px) {
+    .game-container {
+        flex-direction: column;
+        overflow-y: auto;
+    }
+
+    body {
+        overflow: auto;
+    }
+
+    .clicker-section {
+        flex: none;
+        height: 60vh;
+        padding: 10px;
+    }
+
+    .score-container {
+        position: fixed;
+        top: 10px;
+        bottom: auto;
+        margin-bottom: 15px;
+        font-size: 20px;
+    }
+
+    .anime-click-button {
+        width: 280px;
+        height: 320px;
+    }
+
+    .upgrades-section {
+        flex: none;
+        height: 40vh;
+        border-left: none;
+        border-top: 2px solid #ced6e0;
+    }
+
+    .login-box {
+        padding: 25px 20px;
+    }
+
+    .login-box h1 {
+        font-size: 22px;
+    }
+
+    .login-box p {
+        font-size: 14px;
+    }
+}
+.login-container-game {
+    position: fixed;
+    top:1.5vw;
+    left: 1.5vw;
+    z-index: 1000;
+}
+#reg-alert{
+    color: red;
+    text-align: center;
+}
+.toast {
+    position: fixed;
+    bottom: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #ff4757;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3);
+    z-index: 10000;
+    transition: bottom 0.4s ease-in-out;
+    pointer-events: none;
+}
+
+.toast.show {
+    bottom: 30px;
 }

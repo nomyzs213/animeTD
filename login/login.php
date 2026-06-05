@@ -1,3 +1,9 @@
+<?php
+    if(){
+        
+    }
+?>
+
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -7,7 +13,7 @@
     <link rel="stylesheet" href="log-style.css">
 </head>
 <body>
-
+<form action="login.php" method="post" id="log-form">
     <div id="log-box">
         <h1 id="log-title">Logowanie</h1>
         
@@ -21,15 +27,17 @@
             <input type="password" class="log-el" placeholder="********" id="password"> 
         </div>
 
-        <button id="log-btn">Zaloguj się</button>
+        <button id="log-btn" type="submit">Zaloguj się</button>
         
         <p> 
             <a href="../registration/register.html">Nie masz jeszcze konta? Zarejestruj się</a> 
         </p>
-
+        <p> 
+            <a href="../reset/reset_password.php">Nie pamiętasz hasła? Zresetuj je</a> 
+        </p>
         <div id="logAlerts"></div>
     </div>
-
+</form>
     <script src="formCheck.js" type="module"></script>
     <script src="../regLogFuncs.js" type="module"></script>
 </body>

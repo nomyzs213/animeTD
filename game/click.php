@@ -1,6 +1,6 @@
 <?php
 
-$conn = new mysqli("localhost", "root", "", "clicker");
+$conn = new mysqli("localhost", "yurii_animeclickerkonto", "Jp_1234567890", "yurii_animeclicker");
 
 $conn->query("
     UPDATE stats
