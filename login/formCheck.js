@@ -10,7 +10,6 @@ submitBtn.addEventListener("click", () => {
     clearContainer(logAlerts);
 
     if (email && password) {
-        if (!validateEmail(email)) addAlert(logAlerts, "Niepoprawny format emaila");
         if (password.length < 8) addAlert(logAlerts, "Hasło musi mieć co najmniej 8 znaków");
     } else {
         addAlert(logAlerts, "Wypełnij wszystkie pola");

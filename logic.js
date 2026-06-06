@@ -174,3 +174,41 @@ setInterval(() => {
         updateButtonTexts(); 
     }
 }, 1000);
+
+
+const isUserLoggedIn = document.querySelector('.logout-btn') !== null;
+
+if (isUserLoggedIn) {
+    function getGameData() {
+        const score = parseFloat(localStorage.getItem('yenScore')) || 0;
+        
+        const upgrades = {
+            lvl0: parseInt(localStorage.getItem('lvl0')) || 0,
+            lvl1: parseInt(localStorage.getItem('lvl1')) || 0,
+            lvl2: parseInt(localStorage.getItem('lvl2')) || 0,
+            lvl3: parseInt(localStorage.getItem('lvl3')) || 0
+        };
+
+        return JSON.stringify({
+            score: score,
+            upgrades: upgrades
+        });
+    }
+    setInterval(() => {
+        fetch('save_progress.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: getGameData()
+        })
+        .then(response => response.json())
+        .then(data => console.log('Autozapis bazy danych:', data))
+        .catch(err => console.error('Błąd zapisu:', err));
+    }, 15000);
+
+    window.addEventListener('beforeunload', () => {
+        const data = getGameData();
+        navigator.sendBeacon('save_progress.php', data);
+    });
+}

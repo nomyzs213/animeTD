@@ -9,7 +9,7 @@ html {
 }
 
 body {
-    font-family: sans-serif;
+    font-family: 'Segoe UI', Roboto, sans-serif;
     background-color: #f5f6fa;
     color: #2f3542;
     height: 100vh;
@@ -30,46 +30,85 @@ body {
     align-items: center;
     background-color: #ffffff;
     padding: 20px;
+    position: relative;
 }
 
 .score-container {
-    margin-bottom: 30px;
-    font-size: 24px;
     position: fixed;
-    bottom: 1vw;
-    left: 1vw;
-    background-color: rgba(255, 255, 255, 0.85);
-    padding: 10px 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    bottom: 20px;
+    left: 20px;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 10px 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     z-index: 10;
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-h2 {
+.score-container h2 {
     color: #2f3542;
+    font-size: 22px;
+    font-weight: 700;
 }
 
 .anime-click-button {
     width: 440px;
     height: 500px;
-    max-width: 90vw;
-    max-height: 60vh;
-    background-image: url(click.png);
+    max-width: 85vw;
+    max-height: 55vh;
+    background-image: url('click.png');
     background-size: cover;
     background-position: center;
-    color: #ffffff;
-    font-weight: bold;
-    border-radius: 5%;
+    border-radius: 16px;
     background-repeat: no-repeat;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
     user-select: none;
-    transition: transform 0.1s, box-shadow 0.3s;
+    transition: transform 0.05s, box-shadow 0.2s;
 }
 
 .anime-click-button:active {
+    transform: scale(0.96);
+}
+
+.login-container-game {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+}
+
+.logout-btn, .login-container-game .login-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    height: 44px;
+    padding: 0 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    border: none;
+    background-color: #7bed9f;
+    color: #1e3799;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease-in-out;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    z-index: 1000;
+}
+
+.logout-btn:hover, .login-container-game .login-btn:hover {
+    background-color: #59ac73; 
+    transform: scale(1.02);
+}
+
+.logout-btn:active, .login-container-game .login-btn:active {
+    background-color: #428f59; 
     transform: scale(0.98);
 }
 
@@ -77,7 +116,7 @@ h2 {
     flex: 3;
     background-color: #e8f4fd;
     border-left: 2px solid #ced6e0;
-    padding: 20px;
+    padding: 25px 20px;
     color: #2f3542;
     overflow-y: auto;
 }
@@ -86,6 +125,7 @@ h2 {
     margin-bottom: 20px;
     text-align: center;
     color: #57606f;
+    font-size: 20px;
 }
 
 .upgrades-list {
@@ -104,7 +144,7 @@ h2 {
     cursor: pointer;
     width: 100%;
     max-width: 300px;
-    padding: 12px;
+    padding: 14px;
     text-align: center;
     border: none;
     border-radius: 8px;
@@ -131,7 +171,6 @@ h2 {
     100% { transform: scale(0.97) rotate(0deg); }
 }
 
-/* OKIENKO LOGOWANIA */
 .login-overlay {
     position: fixed;
     top: 0;
@@ -161,24 +200,24 @@ h2 {
 
 .login-box h1 {
     color: #ff6b81;
-    font-size: 28px;
+    font-size: 26px;
     margin-bottom: 15px;
 }
 
 .login-box p {
     color: #2f3542;
-    font-size: 16px;
+    font-size: 15px;
     line-height: 1.5;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 .login-box .login-subtext {
     color: #57606f;
-    font-size: 14px;
+    font-size: 13px;
     margin-bottom: 25px;
 }
 
-.login-btn {
+.login-box .login-btn {
     display: block;
     background-color: #7bed9f;
     color: #1e3799;
@@ -196,12 +235,12 @@ h2 {
     margin-bottom: 15px;
 }
 
-.login-btn:hover {
+.login-box .login-btn:hover {
     background-color: #59ac73; 
     transform: scale(1.02);
 }
 
-.login-btn:active {
+.login-box .login-btn:active {
     background-color: #428f59; 
     transform: scale(0.98);
 }
@@ -220,101 +259,33 @@ h2 {
     text-decoration: underline;
 }
 
-/* PRZYCISK ZAMKNIĘCIA W OKIENKU */
-.login-box form {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-}
-
 .close-btn {
     background: none;
     border: none;
     color: #57606f;
-    font-size: 32px;
+    font-size: 36px;
     line-height: 1;
     cursor: pointer;
     padding: 5px;
-    transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
-    width: auto;
-    box-shadow: none;
-    position: fixed;
-    top: 10px;
-    right: 10px;
+    transition: color 0.2s, transform 0.2s;
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    z-index: 10005;
 }
 
 .close-btn:hover {
     color: #ff6b81;
     transform: scale(1.15);
-    background: none;
 }
 
-.close-btn:active {
-    transform: scale(0.95);
-    background: none;
-    animation: none;
-    box-shadow: none;
-}
-
-/* RESPONSYWNOŚĆ (MEDIA QUERIES) */
-@media (max-width: 768px) {
-    .game-container {
-        flex-direction: column;
-        overflow-y: auto;
-    }
-
-    body {
-        overflow: auto;
-    }
-
-    .clicker-section {
-        flex: none;
-        height: 60vh;
-        padding: 10px;
-    }
-
-    .score-container {
-        position: fixed;
-        top: 10px;
-        bottom: auto;
-        margin-bottom: 15px;
-        font-size: 20px;
-    }
-
-    .anime-click-button {
-        width: 280px;
-        height: 320px;
-    }
-
-    .upgrades-section {
-        flex: none;
-        height: 40vh;
-        border-left: none;
-        border-top: 2px solid #ced6e0;
-    }
-
-    .login-box {
-        padding: 25px 20px;
-    }
-
-    .login-box h1 {
-        font-size: 22px;
-    }
-
-    .login-box p {
-        font-size: 14px;
-    }
-}
-.login-container-game {
-    position: fixed;
-    top:1.5vw;
-    left: 1.5vw;
-    z-index: 1000;
-}
-#reg-alert{
-    color: red;
+#reg-alert {
+    color: #ff4757;
     text-align: center;
+    font-weight: 600;
+    margin-top: 10px;
 }
+
 .toast {
     position: fixed;
     bottom: -100px;
@@ -334,4 +305,64 @@ h2 {
 
 .toast.show {
     bottom: 30px;
+}
+
+@media (max-width: 768px) {
+    .game-container {
+        flex-direction: column;
+        overflow-y: auto;
+    }
+
+    body {
+        overflow: auto;
+    }
+
+    .clicker-section {
+        flex: none;
+        height: 65vh;
+        padding: 60px 10px 10px 10px;
+    }
+
+    .score-container {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        bottom: auto;
+        padding: 6px 12px;
+    }
+
+    .score-container h2 {
+        font-size: 18px;
+    }
+
+    .logout-btn, .login-container-game .login-btn {
+        position: absolute;
+        top: 12px;
+        left: auto;
+        right: 12px;
+        height: 34px;
+        padding: 0 14px;
+        font-size: 12px;
+    }
+
+    .anime-click-button {
+        width: 300px;
+        height: 340px;
+    }
+
+    .upgrades-section {
+        flex: none;
+        height: 35vh;
+        border-left: none;
+        border-top: 2px solid #ced6e0;
+        padding: 15px;
+    }
+
+    .login-box {
+        padding: 30px 20px;
+    }
+
+    .login-box h1 {
+        font-size: 22px;
+    }
 }

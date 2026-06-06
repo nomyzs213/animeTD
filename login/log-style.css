@@ -1,7 +1,8 @@
 body {
-    background-image: url('../background-log.gif');
+    background-image: url('../background-log.gif'); /* Zakładam, że tło jest w tym samym miejscu */
     background-size: cover;
     background-position: center;
+    background-attachment: fixed;
     height: 100vh;
     margin: 0;
     display: flex;
@@ -11,70 +12,129 @@ body {
     font-family: "Shippori Antique", sans-serif;
     font-weight: 400;
     font-style: normal;
-    color: white;
-    text-shadow: 2px 2px 0px #000000;
-}
-body a{
-    text-decoration: none;
-}
-#log-title {
-    margin-bottom: 0;
+    color: #563F2E; /* Ciemnobrązowy, czytelny tekst zamiast białego */
 }
 
+/* Formularz opakowuje wszystko, dbamy o wyśrodkowanie */
+#log-form {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+/* Karta formularza logowania - identyczna jak w rejestracji */
 #log-box {
+    background-color: rgba(250, 246, 240, 0.93); /* Delikatnie przezroczysty pastelowy krem */
+    padding: 40px 45px;
+    border-radius: 24px;
+    border: 2px solid #E6D5C3;
+    box-shadow: 0 12px 30px rgba(140, 98, 57, 0.15);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 16px;
-    margin-top: 30px;
-    margin-bottom: 30px;
+    gap: 20px;
+    max-width: 550px;
+    width: 100%;
 }
 
-#log-box p {
-    color: blue;
-    text-shadow: none;
-    background-color: white;
-    border-radius: 20px;
-    padding: 5px;
-    font-size: 0.8em;
+#log-title {
+    margin-bottom: 10px;
+    color: #8C6239; /* Ciepły brąz akcentowy */
+    font-size: 28px;
+    font-weight: 700;
 }
 
 .log-row {
-    display: grid;
-    grid-template-columns: 180px 1fr;
-    align-items: center;
-    gap: 12px;
+    display: flex;
+    flex-direction: column; /* Zmiana na column, bo label w logowaniu jest bardzo długi */
+    gap: 8px;
+    width: 100%;
 }
 
 .log-row label {
-    text-align: right;
-    font-size: 15px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 600;
+    color: #7A6855;
+    padding-left: 5px;
 }
 
 .log-el {
-    width: 300px;
-    height: 34px;
-    border-radius: 15px;
-    border: 1px solid #ccc;
-    padding: 0 12px;
+    width: 100%;
+    height: 40px;
+    border-radius: 20px; /* Bardziej obłe, pasujące do clickera */
+    border: 2px solid #E6D5C3;
+    background-color: #FFFFFF;
+    padding: 0 16px;
     font-size: 14px;
     box-sizing: border-box;
+    color: #563F2E;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-button {
-    height: 50px;
-    width: 200px;
-    border-radius: 15px;
-    margin-top: 8px;
+/* Efekt kliknięcia w pole tekstowe */
+.log-el:focus {
+    outline: none;
+    border-color: #8C6239;
+    box-shadow: 0 0 0 3px rgba(140, 98, 57, 0.15);
+}
+
+#log-btn {
+    height: 46px;
+    width: 220px;
+    border-radius: 23px;
+    margin-top: 12px;
     align-self: center;
     cursor: pointer;
     font-family: "Shippori Antique", sans-serif;
+    font-weight: 600;
     font-size: 15px;
-    border: 1px solid #ccc;
-    background: white;
+    border: none;
+    background: #8C6239; /* Główny pastelowy brąz */
+    color: #FAF6F0;
+    box-shadow: 0 4px 10px rgba(140, 98, 57, 0.2);
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
 }
 
-button:hover {
-    background: #f0f0f0;
+#log-btn:hover {
+    background: #734F2D;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(140, 98, 57, 0.3);
+}
+
+#log-btn:active {
+    transform: translateY(1px);
+}
+
+/* Linki na dole okna logowania */
+#log-box p {
+    margin-top: 2px;
+    font-size: 0.85em;
+    color: #7A6855;
+    text-align: center;
+}
+
+#log-box p a {
+    color: #8C6239;
+    text-decoration: none;
+    font-weight: 600;
+    padding-bottom: 2px;
+    border-bottom: 1px dashed #8C6239;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+#log-box p a:hover {
+    color: #563F2E;
+    border-bottom-style: solid;
+}
+
+/* Alert o błędnym haśle lub braku użytkownika */
+#logAlerts {
+    color: #C26D5C; /* Przygaszona pastelowa czerwień */
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    min-height: 18px;
+    margin-top: 5px;
 }

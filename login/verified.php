@@ -1,11 +1,11 @@
 <?php
+require '../config_db.php';
 session_start();
 if (!isset($_SESSION["registered"])) {
     header("Location: register.php");
     exit;
 }
 try {
-    $conn = new mysqli("localhost", "root", "", "yurii_animeclicker");
 
     $activationSuccess = false;
     $errorMsg = "";
@@ -31,7 +31,7 @@ try {
                 $deleteStmt->execute();
 
                 $_SESSION["registered"] = true;
-                $_SESSION["id"] = $userId;
+                $_SESSION["user_id"] = $userId;
 
                 $activationSuccess = true;
             } else {
@@ -139,7 +139,7 @@ try {
             <div class="icon">🔓</div>
             <h2>Konto aktywowane!</h2>
             <p>Twoja weryfikacja przebiegła pomyślnie. Konto jest już w pełni aktywne, a Ty zostałeś automatycznie zalogowany do gry.</p>
-            <a href="../game/index.php" class="btn">Wejdź do gry 🌸</a>
+            <a href="../index.php" class="btn">Wejdź do gry 🌸</a>
         </div>
     <?php else: ?>
         <div class="status-container error">

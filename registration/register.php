@@ -1,14 +1,11 @@
 <?php
+require '../config.php';
+require '../config_db.php';
 session_start();
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-
-require '../vendor/autoload.php';
 
 $komunikat = "";
 
 try {
-    $conn = new mysqli("localhost", "root", "", "yurii_animeclicker");
     
     if (!empty($_POST["email"]) && !empty($_POST["username"]) && !empty($_POST["password"]) && !empty($_POST["password-repeat"]) && strlen($_POST["password"]) >= 8) {
         
@@ -48,17 +45,7 @@ try {
                         $tokenStmt->bind_param("iss", $userId, $token, $expiresAt);
                         $tokenStmt->execute();
 
-                        $mail = new PHPMailer(true);
-                        $mail->isSMTP();                                             
-                        $mail->Host       = 'smtp.gmail.com';  
-                        $mail->SMTPAuth   = true;                       
-                        $mail->Username   = 'ukhman.yuriy@gmail.com';           
-                        $mail->Password   = 'gozsingabkezybqo';
-                        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;      
-                        $mail->Port       = 587;                                   
-                        $mail->CharSet    = 'UTF-8';
-
-                        $mail->setFrom('ukhman.yuriy@gmail.com', 'Anime Clicker');
+                        $mail->setFrom('animeclicker@game.com', 'Anime Clicker');
                         $mail->addAddress($email);
 
                         $mail->isHTML(true);                                  
@@ -73,9 +60,6 @@ try {
                         </div>';
 
                         $mail->send();
-
-                        $_SESSION["registered"] = true;
-                        $_SESSION["id"] = $userId;
 
                         header("Location: verify.php?status=success");
                         exit;
