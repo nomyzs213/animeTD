@@ -1,13 +1,13 @@
 <?php
 require 'config_db.php';
-    session_start();
-    $zamknal = $_POST["close_login"] ?? false; 
-    $wyloguj = $_POST["logout"] ?? false;
-    if($wyloguj) {
-        session_destroy();
-        header("Location: index.php");
-        exit();
-    }
+session_start();
+$zamknal = $_POST["close_login"] ?? false; 
+$wyloguj = $_POST["logout"] ?? false;
+if($wyloguj) {
+    session_destroy();
+    header("Location: index.php");
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="pl">

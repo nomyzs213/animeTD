@@ -28,14 +28,33 @@
     $lvl2 = (int) ($upgrades["lvl2"] ?? 0);
     $lvl3 = (int) ($upgrades["lvl3"] ?? 0);
 
-    $stmt = $conn->prepare("SELECT user_id FROM highscores WHERE user_id = ?");
-    $stmt->bind_param("i", $_SESSION["user_id"]);
-    $stmt->execute();
-    if($stmt->get_result()->num_rows > 0) {
+    $existsStmt = $conn->prepare("SELECT user_id FROM highscores WHERE user_id = ?");
+    if (!$existsStmt) {
+        http_response_code(500);
+        echo json_encode(["status" => "error", "message" => "Błąd serwera: nie udało się przygotować zapytania."]);
+        exit();
+    }
+    $existsStmt->bind_param("i", $_SESSION["user_id"]);
+    $existsStmt->execute();
+    $result = $existsStmt->get_result();
+    $rowExists = $result && $result->num_rows > 0;
+    $existsStmt->close();
+
+    if ($rowExists) {
         $stmt = $conn->prepare("UPDATE highscores SET yens = ?, upgrade_level_1 = ?, upgrade_level_2 = ?, upgrade_level_3 = ?, upgrade_level_4 = ? WHERE user_id = ?");
+        if (!$stmt) {
+            http_response_code(500);
+            echo json_encode(["status" => "error", "message" => "Błąd serwera: nie udało się przygotować zapytania aktualizacji."]);
+            exit();
+        }
         $stmt->bind_param("diiiii", $score, $lvl0, $lvl1, $lvl2, $lvl3, $_SESSION["user_id"]);
     } else {
         $stmt = $conn->prepare("INSERT INTO highscores (user_id, yens, upgrade_level_1, upgrade_level_2, upgrade_level_3, upgrade_level_4) VALUES (?, ?, ?, ?, ?, ?)");
+        if (!$stmt) {
+            http_response_code(500);
+            echo json_encode(["status" => "error", "message" => "Błąd serwera: nie udało się przygotować zapytania wstawienia."]);
+            exit();
+        }
         $stmt->bind_param("idiiii", $_SESSION["user_id"], $score, $lvl0, $lvl1, $lvl2, $lvl3);
     }
     $stmt->execute();

@@ -4,50 +4,73 @@ session_start();
 
 $komunikat = "";
 $status = "";
-
 $token = $_GET['token'] ?? '';
+$userId = null;
+$tokenValid = false;
 
-if (!empty($_POST["password"]) && !empty($_POST["password-repeat"])) {
-    $password = $_POST["password"];
-    $passwordRepeat = $_POST["password-repeat"];
+if (!empty($token)) {
+    $stmt = $conn->prepare("SELECT user_id FROM email_verification_tokens WHERE token = ? AND expires_at > NOW()");
+    if ($stmt) {
+        $stmt->bind_param("s", $token);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result && $result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $userId = $row['user_id'];
+            $tokenValid = true;
+        }
+        $stmt->close();
+    }
+}
 
-    if ($password !== $passwordRepeat) {
+if (!$tokenValid && $_SERVER['REQUEST_METHOD'] !== 'POST') {
+    $status = "error";
+    $komunikat = "Nieprawidłowy lub wygasły token resetowania hasła.";
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!$tokenValid) {
         $status = "error";
-        $komunikat = "Podane hasła nie są identyczne.";
+        $komunikat = "Nieprawidłowy lub wygasły token resetowania hasła.";
+    } elseif (empty($_POST["password"]) || empty($_POST["password-repeat"])) {
+        $status = "error";
+        $komunikat = "Wypełnij oba pola, aby ustawić nowe hasło.";
     } else {
-        try {
-            $stmt = $conn->prepare("SELECT user_id FROM email_verification_tokens WHERE token = ? AND expires_at > NOW()");
-            $stmt->bind_param("s", $token);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            if ($result->num_rows == 0) {
-                throw new Exception("Nieprawidłowy lub wygasły token resetowania hasła.");
-            }else{
-                $row = $result->fetch_assoc();
-                $userId = $row['user_id'];
-            }
-            $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-            $stmt = $conn->prepare("UPDATE users SET password_hash = ? WHERE user_id = ?");
-            $stmt->bind_param("si", $passwordHash, $userId);
-            $stmt->execute();
-            if ($stmt->affected_rows == 0) {
-                throw new Exception("Nie można zaktualizować hasła. Spróbuj ponownie.");
-            }else{
+        $password = $_POST["password"];
+        $passwordRepeat = $_POST["password-repeat"];
+
+        if ($password !== $passwordRepeat) {
+            $status = "error";
+            $komunikat = "Podane hasła nie są identyczne.";
+        } else {
+            try {
+                $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+                $stmt = $conn->prepare("UPDATE users SET password_hash = ? WHERE user_id = ?");
+                if (!$stmt) {
+                    throw new Exception("Błąd serwera. Spróbuj ponownie później.");
+                }
+                $stmt->bind_param("si", $passwordHash, $userId);
+                $stmt->execute();
+                if ($stmt->affected_rows == 0) {
+                    throw new Exception("Nie można zaktualizować hasła. Spróbuj ponownie.");
+                }
+                $stmt->close();
+
                 $stmt = $conn->prepare("DELETE FROM email_verification_tokens WHERE user_id = ?");
+                if (!$stmt) {
+                    throw new Exception("Błąd serwera. Spróbuj ponownie później.");
+                }
                 $stmt->bind_param("i", $userId);
                 $stmt->execute();
+
+                $status = "success";
+                $komunikat = "Hasło zostało pomyślnie zmienione! Możesz się teraz zalogować.";
+            } catch (Exception $e) {
+                $status = "error";
+                $komunikat = "Wystąpił błąd podczas zmiany hasła. Spróbuj ponownie.";
             }
-            
-            $status = "success";
-            $komunikat = "Hasło zostało pomyślnie zmienione! Możesz się teraz zalogować.";
-        } catch (Exception $e) {
-            $status = "error";
-            $komunikat = "Wystąpił błąd podczas zmiany hasła. Spróbuj ponownie.";
         }
     }
-}else{
-    $status = "error";
-    $komunikat = "Wypełnij oba pola, aby ustawić nowe hasło.";
 }
 ?>
 <!DOCTYPE html>

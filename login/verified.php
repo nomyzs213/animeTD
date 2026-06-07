@@ -1,10 +1,6 @@
 <?php
 require '../config_db.php';
 session_start();
-if (!isset($_SESSION["registered"])) {
-    header("Location: register.php");
-    exit;
-}
 try {
 
     $activationSuccess = false;
@@ -14,34 +10,43 @@ try {
         $token = $_GET["token"];
 
         $stmt = $conn->prepare("SELECT user_id FROM email_verification_tokens WHERE token = ? AND expires_at > NOW()");
-        $stmt->bind_param("s", $token);
-        $stmt->execute();
-        $result = $stmt->get_result();
+        if ($stmt) {
+            $stmt->bind_param("s", $token);
+            $stmt->execute();
+            $result = $stmt->get_result();
 
-        if ($result->num_rows === 1) {
-            $row = $result->fetch_assoc();
-            $userId = $row["user_id"];
+            if ($result && $result->num_rows === 1) {
+                $row = $result->fetch_assoc();
+                $userId = $row["user_id"];
 
-            $updateStmt = $conn->prepare("UPDATE users SET verified = 1 WHERE user_id = ?");
-            $updateStmt->bind_param("i", $userId);
-            if ($updateStmt->execute()) {
+                $updateStmt = $conn->prepare("UPDATE users SET verified = 1 WHERE user_id = ?");
+                if ($updateStmt) {
+                    $updateStmt->bind_param("i", $userId);
+                    if ($updateStmt->execute()) {
+                        $deleteStmt = $conn->prepare("DELETE FROM email_verification_tokens WHERE token = ?");
+                        if ($deleteStmt) {
+                            $deleteStmt->bind_param("s", $token);
+                            $deleteStmt->execute();
+                        }
 
-                $deleteStmt = $conn->prepare("DELETE FROM email_verification_tokens WHERE token = ?");
-                $deleteStmt->bind_param("s", $token);
-                $deleteStmt->execute();
+                        $_SESSION["registered"] = true;
+                        $_SESSION["user_id"] = $userId;
 
-                $_SESSION["registered"] = true;
-                $_SESSION["user_id"] = $userId;
-
-                $activationSuccess = true;
+                        $activationSuccess = true;
+                    } else {
+                        $errorMsg = "Nie można aktywować konta. Proszę spróbować ponownie.";
+                    }
+                } else {
+                    $errorMsg = "Wystąpił błąd serwera. Spróbuj ponownie później.";
+                }
             } else {
-                $errorMsg = "Nie można aktywować konta. Proszę spróbować ponownie.";
+                $errorMsg = "Nieprawidłowy lub wygasły link aktywacyjny.";
             }
         } else {
-            $errorMsg = "Nieprawidłowy lub wygasły link aktywacyjny.";
+            $errorMsg = "Wystąpił błąd serwera. Spróbuj ponownie później.";
         }
     } else {
-        header("Location: register.php");
+        header("Location: ../registration/register.php");
         exit;
     }
 } catch (Exception $e) {
