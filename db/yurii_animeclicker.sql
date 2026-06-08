@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Час створення: Чрв 06 2026 р., 17:21
+-- Час створення: Чрв 08 2026 р., 12:45
 -- Версія сервера: 10.4.32-MariaDB
 -- Версія PHP: 8.2.12
 
@@ -50,6 +50,14 @@ CREATE TABLE `highscores` (
   `upgrade_level_4` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Дамп даних таблиці `highscores`
+--
+
+INSERT INTO `highscores` (`score_id`, `user_id`, `yens`, `upgrade_level_1`, `upgrade_level_2`, `upgrade_level_3`, `upgrade_level_4`) VALUES
+(4, 9, 175.10, 3, 1, 0, 0),
+(5, 10, 369.30, 2, 1, 0, 0);
+
 -- --------------------------------------------------------
 
 --
@@ -69,7 +77,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `username`, `email`, `password_hash`, `verified`) VALUES
-(8, 'konto', 'yuriyuhman@gmail.com', '$2y$10$xWfgcJy/o6OhQrx5p1mCiOibjAt9sJVkhLwXnxCaFr0wuQN.5KETm', 1);
+(9, 'konto', 'yuriyuhman@gmail.com', '$2y$10$FmxE.uTgzDEtQAqbdHooj.eYhucFBjrOtR/UigSPgtDH63XwUZSLe', 1),
+(10, 'konto1', 'ukhman.yuriy@gmail.com', '$2y$10$l26Eh1ck7NPAb4tVvDGOBerxgCj/AAdVHiUZuKo3FH742q1ZjZtRu', 1);
 
 --
 -- Індекси збережених таблиць
@@ -106,19 +115,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT для таблиці `email_verification_tokens`
 --
 ALTER TABLE `email_verification_tokens`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT для таблиці `highscores`
 --
 ALTER TABLE `highscores`
-  MODIFY `score_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `score_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT для таблиці `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Обмеження зовнішнього ключа збережених таблиць
