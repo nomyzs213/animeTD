@@ -47,16 +47,20 @@ CREATE TABLE `highscores` (
   `upgrade_level_1` int(11) NOT NULL DEFAULT 0,
   `upgrade_level_2` int(11) NOT NULL DEFAULT 0,
   `upgrade_level_3` int(11) NOT NULL DEFAULT 0,
-  `upgrade_level_4` int(11) NOT NULL DEFAULT 0
+  `upgrade_level_4` int(11) NOT NULL DEFAULT 0,
+  `upgrade_level_5` int(11) NOT NULL DEFAULT 0,
+  `upgrade_level_6` int(11) NOT NULL DEFAULT 0,
+  `upgrade_level_7` int(11) NOT NULL DEFAULT 0,
+  `upgrade_level_8` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Дамп даних таблиці `highscores`
 --
 
-INSERT INTO `highscores` (`score_id`, `user_id`, `yens`, `upgrade_level_1`, `upgrade_level_2`, `upgrade_level_3`, `upgrade_level_4`) VALUES
-(4, 9, 175.10, 3, 1, 0, 0),
-(5, 10, 369.30, 2, 1, 0, 0);
+INSERT INTO `highscores` (`score_id`, `user_id`, `yens`, `upgrade_level_1`, `upgrade_level_2`, `upgrade_level_3`, `upgrade_level_4`, `upgrade_level_5`, `upgrade_level_6`, `upgrade_level_7`, `upgrade_level_8`) VALUES
+(4, 9, 175.10, 3, 1, 0, 0, 0, 0, 0, 0),
+(5, 10, 369.30, 2, 1, 0, 0, 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 

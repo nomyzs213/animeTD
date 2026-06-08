@@ -13,6 +13,10 @@ CREATE TABLE highscores (
     upgrade_level_2 INTEGER NOT NULL DEFAULT 0,
     upgrade_level_3 INTEGER NOT NULL DEFAULT 0,
     upgrade_level_4 INTEGER NOT NULL DEFAULT 0,
+    upgrade_level_5 INTEGER NOT NULL DEFAULT 0,
+    upgrade_level_6 INTEGER NOT NULL DEFAULT 0,
+    upgrade_level_7 INTEGER NOT NULL DEFAULT 0,
+    upgrade_level_8 INTEGER NOT NULL DEFAULT 0,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );  
 
