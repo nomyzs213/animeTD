@@ -7,13 +7,14 @@ if (!isset($_SESSION['user_id'])) {
     echo json_encode(['status' => 'error', 'message' => 'Nieautoryzowany dostęp']);
     exit();
 }
-
-$conn = new mysqli('localhost', 'root', '', 'clicker');
-if ($conn->connect_error) {
+try{
+    $conn = new mysqli('localhost', 'root', '', 'clicker');
+} catch (Exception $e) {
     http_response_code(500);
-    echo json_encode(['status' => 'error', 'message' => 'Błąd połączenia z bazą danych']);
+    echo json_encode(['status' => 'error', 'message' => 'Błąd serwera: nie można połączyć się z bazą danych']);
     exit();
 }
+
 
 $action = $_GET['action'] ?? null;
 if (!$action) {
