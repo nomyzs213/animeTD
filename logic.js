@@ -1,18 +1,14 @@
-// Zmiana na parseFloat, aby zachować grosze przy wczytywaniu
 let score = parseFloat(localStorage.getItem('yenScore')) || 0;
 
-// Zmienne przechowujące liczbę zakupionych ulepszeń (wczytywane z localStorage)
 let lvl0 = parseInt(localStorage.getItem('lvl0')) || 0; // Trening
 let lvl1 = parseInt(localStorage.getItem('lvl1')) || 0; // Błogosławieństwo
 let lvl2 = parseInt(localStorage.getItem('lvl2')) || 0; // Ninja
 let lvl3 = parseInt(localStorage.getItem('lvl3')) || 0; // Miecz
 
-// Dynamiczne przeliczanie statystyk na start na podstawie wczytanych poziomów
 let dodawanie = 1 + (lvl0 * 1) + (lvl3 * 5);
 let mnozenie = 1.0 + (lvl1 * 0.1);
 let baseCps = 0 + (lvl2 * 1);
 
-// Ceny bazowe ulepszeń
 const baseCost0 = 10;
 const baseCost1 = 100;
 const baseCost2 = 500;
@@ -31,11 +27,9 @@ const counter = document.getElementById('score-counter');
 const clickTarget = document.getElementById('click-target');
 const upgradesContainer = document.getElementById("upgrades-container");
 
-// Wyświetlenie wyniku z dwoma miejscami po przecinku na start
 counter.textContent = score.toFixed(2);
 
 function updateButtonTexts() {
-    // Poprawione wywołania funkcji kosztów (getCostAddings / getCostMnozenie) oraz dodane .toFixed(2)
     let profit0_now = (dodawanie * mnozenie).toFixed(2);
     let profit0_next = ((dodawanie + 1) * mnozenie).toFixed(2);
     ulepszenia[0].textContent = `🏋️ Trening na siłowni (${profit0_now} ➔ ${profit0_next}/klik) [Poz. ${lvl0}] | 💰 Koszt: ${getCostAddings(baseCost0, lvl0).toFixed(2)} Yen`;
@@ -53,7 +47,6 @@ function updateButtonTexts() {
     ulepszenia[3].textContent = `⚔️ Miecz z czarnej stali (${profit3_now} ➔ ${profit3_next}/klik) [Poz. ${lvl3}] | 💰 Koszt: ${getCostAddings(baseCost3, lvl3).toFixed(2)} Yen`;
 }
 
-// Sprawdzenie na start (gdy gracz odświeża stronę z wczytanym już stanem)
 if (score >= 0) {
     ulepszenia[0].id = 'id0';
     upgradesContainer.appendChild(ulepszenia[0]);
@@ -77,7 +70,6 @@ clickTarget.addEventListener('click', () => {
     counter.textContent = score.toFixed(2);
     localStorage.setItem("yenScore", score);
     
-    // Logika pojawiania się przycisków
     if(score >= 100 && !document.getElementById('id1')){
         ulepszenia[1].id = 'id1';
         upgradesContainer.appendChild(ulepszenia[1]);
@@ -94,7 +86,6 @@ clickTarget.addEventListener('click', () => {
     updateButtonTexts();
 });
 
-// LOGIKA ZAKUPU ULEPSZEŃ
 
 ulepszenia[0].addEventListener('click', () => {
     let currentCost = getCostAddings(baseCost0, lvl0);
@@ -195,17 +186,38 @@ if (isUserLoggedIn) {
         });
     }
     setInterval(() => {
-        fetch('save_progress.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: getGameData()
-        })
-        .then(response => response.json())
-        .then(data => console.log('Autozapis bazy danych:', data))
-        .catch(err => console.error('Błąd zapisu:', err));
-    }, 15000);
+    fetch('save_progress.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: getGameData()
+    })
+    .then(async response => {
+        const rawText = await response.text();
+        console.log("{rawText}", rawText);
+        let data = null;
+        try {
+            data = rawText ? JSON.parse(rawText) : null;
+        } catch (e) {
+            throw new Error(`Serwer zwrócił niepoprawny format danych (Kod: ${response.status})`);
+        }
+        if (!response.ok) {
+            const serverMessage = data && data.message ? data.message : "Nieznany błąd serwera";
+            const serverCode = data && data.code ? ` [Kod: ${data.code}]` : "";
+            
+            throw new Error(`${serverMessage}${serverCode}`);
+        }
+
+        return data;
+    })
+    .then(data => {
+        console.log('Autozapis udany:', data);
+    })
+    .catch(err => {
+        console.error('Komunikat błędu zapisu:', err.message);
+    });
+}, 15000);
 
     window.addEventListener('beforeunload', () => {
         const data = getGameData();

@@ -1,5 +1,6 @@
 <?php
     session_start();
+    header('Content-Type: application/json; charset=utf-8');
     if(!isset($_SESSION["user_id"])) {
         http_response_code(401);
         echo json_encode(["status" => "error", "message" => "Nieautoryzowany dostęp"]);
@@ -15,7 +16,7 @@
 
     if (!$data) {
         http_response_code(400);
-        echo json_encode(["status" => "error", "message" => "Brak lub uszkodzone dane wejściowe"]);
+        echo json_encode(["status"=>"error", "message"=>"Brak lub uszkodzone dane wejściowe"]);
         exit();
     }
 
@@ -60,7 +61,7 @@
     $stmt->execute();
     if($stmt->error) {
         http_response_code(500);
-        echo json_encode(["status" => "error", "message" => "Błąd podczas zapisywania postępu: " . htmlspecialchars($stmt->error)]);
+        echo json_encode(["status" => "error", "message" => "Błąd podczas zapisywania postępu: " . $stmt->error]);
         exit();
     }
     $stmt->close();

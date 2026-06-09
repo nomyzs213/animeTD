@@ -83,11 +83,11 @@ if($wyloguj) {
         $conn->close();
         ?>
         <script>
-            const savedScore = <?php echo htmlspecialchars((float)$score, ENT_QUOTES, 'UTF-8'); ?>;
-            const lvl0_php = <?php echo htmlspecialchars((int)$upgrades["lvl0"], ENT_QUOTES, 'UTF-8'); ?>;
-            const lvl1_php = <?php echo htmlspecialchars((int)$upgrades["lvl1"], ENT_QUOTES, 'UTF-8'); ?>;
-            const lvl2_php = <?php echo htmlspecialchars((int)$upgrades["lvl2"], ENT_QUOTES, 'UTF-8'); ?>;
-            const lvl3_php = <?php echo htmlspecialchars((int)$upgrades["lvl3"], ENT_QUOTES, 'UTF-8'); ?>;
+            let savedScore = <?php echo htmlspecialchars((float)$score, ENT_QUOTES, 'UTF-8'); ?>;
+            let lvl0_php = <?php echo htmlspecialchars((int)$upgrades["lvl0"], ENT_QUOTES, 'UTF-8'); ?>;
+            let lvl1_php = <?php echo htmlspecialchars((int)$upgrades["lvl1"], ENT_QUOTES, 'UTF-8'); ?>;
+            let lvl2_php = <?php echo htmlspecialchars((int)$upgrades["lvl2"], ENT_QUOTES, 'UTF-8'); ?>;
+            let lvl3_php = <?php echo htmlspecialchars((int)$upgrades["lvl3"], ENT_QUOTES, 'UTF-8'); ?>;
             localStorage.setItem('yenScore', savedScore);
             localStorage.setItem('lvl0', lvl0_php);
             localStorage.setItem('lvl1', lvl1_php);
