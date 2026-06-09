@@ -1,28 +1,28 @@
 let score = parseFloat(localStorage.getItem('yenScore')) || 0;
 
-let lvl0 = parseInt(localStorage.getItem('lvl0')) || 0; // Trening
-let lvl1 = parseInt(localStorage.getItem('lvl1')) || 0; // Błogosławieństwo
-let lvl2 = parseInt(localStorage.getItem('lvl2')) || 0; // Ninja
-let lvl3 = parseInt(localStorage.getItem('lvl3')) || 0; // Miecz
-let lvl4 = parseInt(localStorage.getItem('lvl4')) || 0; // Autoclicker
-let lvl5 = parseInt(localStorage.getItem('lvl5')) || 0; // Lucky Charm (crit chance)
-let lvl6 = parseInt(localStorage.getItem('lvl6')) || 0; // Discount
-let lvl7 = parseInt(localStorage.getItem('lvl7')) || 0; // Golden Sword
+let lvl0 = parseInt(localStorage.getItem('lvl0')) || 0;
+let lvl1 = parseInt(localStorage.getItem('lvl1')) || 0;
+let lvl2 = parseInt(localStorage.getItem('lvl2')) || 0;
+let lvl3 = parseInt(localStorage.getItem('lvl3')) || 0;
+let lvl4 = parseInt(localStorage.getItem('lvl4')) || 0;
+let lvl5 = parseInt(localStorage.getItem('lvl5')) || 0;
+let lvl6 = parseInt(localStorage.getItem('lvl6')) || 0; 
+let lvl7 = parseInt(localStorage.getItem('lvl7')) || 0;
 
 let dodawanie = 1 + (lvl0 * 1) + (lvl3 * 5) + (lvl7 * 20);
 let mnozenie = 1.0 + (lvl1 * 0.1);
 let baseCps = 0 + (lvl2 * 1) + (lvl4 * 5);
-let critChance = lvl5 * 0.02; // 2% per level
-let costDiscount = Math.pow(0.95, lvl6); // 5% discount per level multiplicative
+let critChance = lvl5 * 0.02;
+let costDiscount = Math.pow(0.95, lvl6);
 
 const baseCost0 = 10;
 const baseCost1 = 100;
 const baseCost2 = 500;
 const baseCost3 = 1000;
-const baseCost4 = 2500; // Autoclicker
-const baseCost5 = 800;  // Lucky Charm
-const baseCost6 = 1500; // Discount
-const baseCost7 = 3000; // Golden Sword
+const baseCost4 = 2500;
+const baseCost5 = 800;
+const baseCost6 = 1500;
+const baseCost7 = 3000;
 
 function getCostAddings(baseCost, level) {
     return Math.max(1, Math.round(baseCost * Math.pow(3, level) * costDiscount));
@@ -73,7 +73,6 @@ function updateButtonTexts() {
     ulepszenia[7].textContent = `⚜️ Złoty Miecz (${profit7_now} ➔ ${profit7_next}/klik) [Poz. ${lvl7}] | 💰 Koszt: ${getCostAddings(baseCost7, lvl7).toFixed(2)} Yen`;
 }
 
-// Sprawdzenie na start (gdy gracz odświeża stronę z wczytanym już stanem)
 if (score >= 0) {
     ulepszenia[0].id = 'id0';
     upgradesContainer.appendChild(ulepszenia[0]);
@@ -111,7 +110,7 @@ updateButtonTexts();
 clickTarget.addEventListener('click', () => {
     let gain = (dodawanie * mnozenie);
     if (Math.random() < critChance) {
-        gain = gain * 2; // krytyczne trafienie daje podwójne Yeny
+        gain = gain * 2;
     }
     score += gain;
     counter.textContent = score.toFixed(2);
@@ -214,7 +213,6 @@ ulepszenia[3].addEventListener('click', () => {
     }
 });
 
-// Autoclicker
 ulepszenia[4].addEventListener('click', () => {
     let currentCost = getCostAddings(baseCost4, lvl4);
     if (score >= currentCost) {
@@ -231,7 +229,6 @@ ulepszenia[4].addEventListener('click', () => {
     }
 });
 
-// Lucky Charm (crit chance)
 ulepszenia[5].addEventListener('click', () => {
     let currentCost = getCostAddings(baseCost5, lvl5);
     if (score >= currentCost) {
@@ -248,7 +245,6 @@ ulepszenia[5].addEventListener('click', () => {
     }
 });
 
-// Discount
 ulepszenia[6].addEventListener('click', () => {
     let currentCost = getCostAddings(baseCost6, lvl6);
     if (score >= currentCost) {
@@ -265,7 +261,6 @@ ulepszenia[6].addEventListener('click', () => {
     }
 });
 
-// Golden Sword
 ulepszenia[7].addEventListener('click', () => {
     let currentCost = getCostAddings(baseCost7, lvl7);
     if (score >= currentCost) {
