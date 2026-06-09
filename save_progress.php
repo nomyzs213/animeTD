@@ -6,7 +6,7 @@
         echo json_encode(["status" => "error", "message" => "Nieautoryzowany dostęp"]);
         exit();
     }
-    $conn = new mysqli("localhost", "root", "", "yurii_animeclicker");
+    $conn = new mysqli("localhost", "root", "", "clicker");
     if ($conn->connect_error) {
         http_response_code(500);
         echo json_encode(["status" => "error", "message" => "Błąd połączenia z bazą danych: "]);

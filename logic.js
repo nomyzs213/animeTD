@@ -27,6 +27,7 @@ const baseCost7 = 3000;
 function getCostAddings(baseCost, level) {
     return Math.max(1, Math.round(baseCost * Math.pow(3, level) * costDiscount));
 }
+
 function getCostMnozenie(baseCost, level) {
     return Math.max(1, Math.round(baseCost * Math.pow(6, level) * costDiscount));
 }
@@ -36,6 +37,11 @@ for (let i = 0; i < 8; i++) ulepszenia.push(document.createElement('button'));
 const counter = document.getElementById('score-counter');
 const clickTarget = document.getElementById('click-target');
 const upgradesContainer = document.getElementById("upgrades-container");
+
+let recentClickTimestamps = [];
+let lastAntiCheatReportAt = 0;
+let isBannedByAutoClicker = false;
+let isClickBlockedUntilClose = false;
 
 counter.textContent = score.toFixed(2);
 
@@ -108,6 +114,16 @@ if (score >= 3000 || lvl7 > 0) {
 updateButtonTexts();
 
 clickTarget.addEventListener('click', () => {
+    if (isBannedByAutoClicker || isClickBlockedUntilClose) {
+        return;
+    }
+
+    const now = Date.now();
+    recentClickTimestamps.push(now);
+    if (isSuspiciousClick()) {
+        reportSuspiciousClick();
+    }
+
     let gain = (dodawanie * mnozenie);
     if (Math.random() < critChance) {
         gain = gain * 2;
@@ -115,36 +131,36 @@ clickTarget.addEventListener('click', () => {
     score += gain;
     counter.textContent = score.toFixed(2);
     localStorage.setItem("yenScore", score);
-    
-    if(score >= 100 && !document.getElementById('id1')){
+
+    if (score >= 100 && !document.getElementById('id1')) {
         ulepszenia[1].id = 'id1';
         upgradesContainer.appendChild(ulepszenia[1]);
     }
-    if(score >= 500 && !document.getElementById('id2')){
+    if (score >= 500 && !document.getElementById('id2')) {
         ulepszenia[2].id = 'id2';
         upgradesContainer.appendChild(ulepszenia[2]);
     }
-    if(score >= 1000 && !document.getElementById('id3')){
+    if (score >= 1000 && !document.getElementById('id3')) {
         ulepszenia[3].id = 'id3';
         upgradesContainer.appendChild(ulepszenia[3]);
     }
-    if(score >= 2500 && !document.getElementById('id4')){
+    if (score >= 2500 && !document.getElementById('id4')) {
         ulepszenia[4].id = 'id4';
         upgradesContainer.appendChild(ulepszenia[4]);
     }
-    if(score >= 800 && !document.getElementById('id5')){
+    if (score >= 800 && !document.getElementById('id5')) {
         ulepszenia[5].id = 'id5';
         upgradesContainer.appendChild(ulepszenia[5]);
     }
-    if(score >= 1500 && !document.getElementById('id6')){
+    if (score >= 1500 && !document.getElementById('id6')) {
         ulepszenia[6].id = 'id6';
         upgradesContainer.appendChild(ulepszenia[6]);
     }
-    if(score >= 3000 && !document.getElementById('id7')){
+    if (score >= 3000 && !document.getElementById('id7')) {
         ulepszenia[7].id = 'id7';
         upgradesContainer.appendChild(ulepszenia[7]);
     }
-    
+
     updateButtonTexts();
 });
 
@@ -153,12 +169,12 @@ ulepszenia[0].addEventListener('click', () => {
     let currentCost = getCostAddings(baseCost0, lvl0);
     if (score >= currentCost) {
         score -= currentCost;
-        lvl0++; 
+        lvl0++;
         dodawanie += 1;
-        
+
         counter.textContent = score.toFixed(2);
         localStorage.setItem("yenScore", score);
-        localStorage.setItem("lvl0", lvl0); 
+        localStorage.setItem("lvl0", lvl0);
         updateButtonTexts();
     } else {
         showErrorToast();
@@ -171,7 +187,7 @@ ulepszenia[1].addEventListener('click', () => {
         score -= currentCost;
         lvl1++;
         mnozenie += 0.1;
-        
+
         counter.textContent = score.toFixed(2);
         localStorage.setItem("yenScore", score);
         localStorage.setItem("lvl1", lvl1);
@@ -187,7 +203,7 @@ ulepszenia[2].addEventListener('click', () => {
         score -= currentCost;
         lvl2++;
         baseCps += 1;
-        
+
         counter.textContent = score.toFixed(2);
         localStorage.setItem("yenScore", score);
         localStorage.setItem("lvl2", lvl2);
@@ -203,7 +219,7 @@ ulepszenia[3].addEventListener('click', () => {
         score -= currentCost;
         lvl3++;
         dodawanie += 5;
-        
+
         counter.textContent = score.toFixed(2);
         localStorage.setItem("yenScore", score);
         localStorage.setItem("lvl3", lvl3);
@@ -276,19 +292,132 @@ ulepszenia[7].addEventListener('click', () => {
         showErrorToast();
     }
 });
-function showErrorToast() {
+
+function showToast(message) {
     const toast = document.getElementById('toast-notification');
+    const toastMessage = toast.querySelector('.toast-message');
+    if (toastMessage) {
+        toastMessage.textContent = message;
+    } else {
+        toast.textContent = message;
+    }
     toast.classList.add('show');
-    setTimeout(() => {
-        toast.classList.remove('show');
-    }, 3000);
 }
+
+function hideToast() {
+    const toast = document.getElementById('toast-notification');
+    if (toast) {
+        toast.classList.remove('show');
+    }
+    if (isClickBlockedUntilClose && !isBannedByAutoClicker) {
+        isClickBlockedUntilClose = false;
+        clickTarget.style.pointerEvents = 'auto';
+        clickTarget.style.opacity = '1';
+    }
+}
+
+function showErrorToast() {
+    showToast('Nie masz wystarczająco Yenów!');
+}
+
+const toastCloseButton = document.getElementById('toast-close');
+if (toastCloseButton) {
+    toastCloseButton.addEventListener('click', hideToast);
+}
+
+function setTemporaryClickBlock(seconds, message) {
+    if (isBannedByAutoClicker) {
+        return;
+    }
+    isClickBlockedUntilClose = true;
+    clickTarget.style.pointerEvents = 'none';
+    clickTarget.style.opacity = '0.6';
+    showToast(message);
+}
+
+function disableAutoClickerControls(message) {
+    isBannedByAutoClicker = true;
+    clickTarget.style.pointerEvents = 'none';
+    clickTarget.style.opacity = '0.6';
+    showToast(message);
+}
+
+function isSuspiciousClick() {
+    const now = Date.now();
+    recentClickTimestamps = recentClickTimestamps.filter(ts => now - ts <= 5000);
+    if (recentClickTimestamps.length >= 40) {
+        return true;
+    }
+    if (recentClickTimestamps.length >= 11) {
+        const first = recentClickTimestamps[0];
+        const last = recentClickTimestamps[recentClickTimestamps.length - 1];
+        if (last - first <= 1200) {
+            return true;
+        }
+    }
+    return false;
+}
+
+async function reportSuspiciousClick() {
+    const now = Date.now();
+    if (now - lastAntiCheatReportAt < 9000) {
+        return;
+    }
+    lastAntiCheatReportAt = now;
+
+    try {
+        const response = await fetch('anti_autoclicker.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ action: 'suspicious' })
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+            console.error('Błąd antycheat:', data.message || response.statusText);
+            return;
+        }
+
+        if (data.banned) {
+            disableAutoClickerControls(data.message || 'Twoje konto zostało tymczasowo zablokowane.');
+            return;
+        }
+
+        if (data.warning_count !== undefined) {
+            const blockSeconds = data.block_seconds || 10;
+            setTemporaryClickBlock(blockSeconds, `Ostrzeżenie ${data.warning_count}/5. Klikanie zablokowane.`);
+        }
+    } catch (error) {
+        console.error('Antycheat nie dostępny:', error);
+    }
+}
+
+async function checkAutoClickerStatus() {
+    try {
+        const response = await fetch('anti_autoclicker.php?action=status');
+        const data = await response.json();
+
+        if (!response.ok) {
+            console.error('Nie można pobrać statusu antycheat:', data.message || response.statusText);
+            return;
+        }
+
+        if (data.banned) {
+            disableAutoClickerControls(data.message || 'Twoje konto jest zbanowane.');
+        }
+    } catch (error) {
+        console.error('Błąd pobierania statusu antycheat:', error);
+    }
+}
+
 setInterval(() => {
     if (baseCps > 0) {
-        score += (baseCps * mnozenie); 
+        score += (baseCps * mnozenie);
         counter.textContent = score.toFixed(2);
         localStorage.setItem("yenScore", score);
-        updateButtonTexts(); 
+        updateButtonTexts();
     }
 }, 1000);
 
@@ -296,9 +425,11 @@ setInterval(() => {
 const isUserLoggedIn = document.querySelector('.logout-btn') !== null;
 
 if (isUserLoggedIn) {
+    checkAutoClickerStatus();
+
     function getGameData() {
         const score = parseFloat(localStorage.getItem('yenScore')) || 0;
-        
+
         const upgrades = {
             lvl0: parseInt(localStorage.getItem('lvl0')) || 0,
             lvl1: parseInt(localStorage.getItem('lvl1')) || 0,
@@ -316,38 +447,38 @@ if (isUserLoggedIn) {
         });
     }
     setInterval(() => {
-    fetch('save_progress.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: getGameData()
-    })
-    .then(async response => {
-        const rawText = await response.text();
-        console.log("{rawText}", rawText);
-        let data = null;
-        try {
-            data = rawText ? JSON.parse(rawText) : null;
-        } catch (e) {
-            throw new Error(`Serwer zwrócił niepoprawny format danych (Kod: ${response.status})`);
-        }
-        if (!response.ok) {
-            const serverMessage = data && data.message ? data.message : "Nieznany błąd serwera";
-            const serverCode = data && data.code ? ` [Kod: ${data.code}]` : "";
-            
-            throw new Error(`${serverMessage}${serverCode}`);
-        }
+        fetch('save_progress.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: getGameData()
+            })
+            .then(async response => {
+                const rawText = await response.text();
+                console.log("{rawText}", rawText);
+                let data = null;
+                try {
+                    data = rawText ? JSON.parse(rawText) : null;
+                } catch (e) {
+                    throw new Error(`Serwer zwrócił niepoprawny format danych (Kod: ${response.status})`);
+                }
+                if (!response.ok) {
+                    const serverMessage = data && data.message ? data.message : "Nieznany błąd serwera";
+                    const serverCode = data && data.code ? ` [Kod: ${data.code}]` : "";
 
-        return data;
-    })
-    .then(data => {
-        console.log('Autozapis udany:', data);
-    })
-    .catch(err => {
-        console.error('Komunikat błędu zapisu:', err.message);
-    });
-}, 15000);
+                    throw new Error(`${serverMessage}${serverCode}`);
+                }
+
+                return data;
+            })
+            .then(data => {
+                console.log('Autozapis udany:', data);
+            })
+            .catch(err => {
+                console.error('Komunikat błędu zapisu:', err.message);
+            });
+    }, 15000);
 
     window.addEventListener('beforeunload', () => {
         const data = getGameData();
