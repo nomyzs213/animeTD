@@ -40,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && !empty($_POST["user_identifier"])) 
             $mail->isHTML(true);
 
             $mail->Subject = 'Instrukcje resetowania hasła do Anime Clicker';
-            $resetLink = "http://localhost/animeTD/reset/new_password.php?token=$token";
+            $resetLink = "http://localhost/clicker/reset/new_password.php?token=$token";
             $mail->Body    = '
                 <div style="background-color: #FAF6F0; padding: 40px 30px; font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif; border-radius: 16px; max-width: 500px; margin: 0 auto; text-align: center; color: #563F2E; border: 2px solid #E6D5C3;">
     
