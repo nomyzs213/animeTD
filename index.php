@@ -67,7 +67,7 @@ if($wyloguj) {
     <?php if(isset($_SESSION["user_id"])): ?>
         <?php
         require 'config_db.php';
-        $stmt = $conn->prepare("SELECT yens, upgrade_level_1, upgrade_level_2, upgrade_level_3, upgrade_level_4 FROM highscores WHERE user_id = ?");
+        $stmt = $conn->prepare("SELECT yens, upgrade_level_1, upgrade_level_2, upgrade_level_3, upgrade_level_4, upgrade_level_5, upgrade_level_6, upgrade_level_7, upgrade_level_8 FROM highscores WHERE user_id = ?");
         $stmt->bind_param("i", $_SESSION["user_id"]);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -77,7 +77,11 @@ if($wyloguj) {
             "lvl0" => $gameData["upgrade_level_1"] ?? 0,
             "lvl1" => $gameData["upgrade_level_2"] ?? 0,
             "lvl2" => $gameData["upgrade_level_3"] ?? 0,
-            "lvl3" => $gameData["upgrade_level_4"] ?? 0
+            "lvl3" => $gameData["upgrade_level_4"] ?? 0,
+            "lvl4" => $gameData["upgrade_level_5"] ?? 0,
+            "lvl5" => $gameData["upgrade_level_6"] ?? 0,
+            "lvl6" => $gameData["upgrade_level_7"] ?? 0,
+            "lvl7" => $gameData["upgrade_level_8"] ?? 0
         ];
         $stmt->close();
         $conn->close();
@@ -88,11 +92,19 @@ if($wyloguj) {
             const lvl1_php = <?php echo htmlspecialchars((int)$upgrades["lvl1"], ENT_QUOTES, 'UTF-8'); ?>;
             const lvl2_php = <?php echo htmlspecialchars((int)$upgrades["lvl2"], ENT_QUOTES, 'UTF-8'); ?>;
             const lvl3_php = <?php echo htmlspecialchars((int)$upgrades["lvl3"], ENT_QUOTES, 'UTF-8'); ?>;
+            const lvl4_php = <?php echo htmlspecialchars((int)$upgrades["lvl4"], ENT_QUOTES, 'UTF-8'); ?>;
+            const lvl5_php = <?php echo htmlspecialchars((int)$upgrades["lvl5"], ENT_QUOTES, 'UTF-8'); ?>;
+            const lvl6_php = <?php echo htmlspecialchars((int)$upgrades["lvl6"], ENT_QUOTES, 'UTF-8'); ?>;
+            const lvl7_php = <?php echo htmlspecialchars((int)$upgrades["lvl7"], ENT_QUOTES, 'UTF-8'); ?>;
             localStorage.setItem('yenScore', savedScore);
             localStorage.setItem('lvl0', lvl0_php);
             localStorage.setItem('lvl1', lvl1_php);
             localStorage.setItem('lvl2', lvl2_php);
             localStorage.setItem('lvl3', lvl3_php);
+            localStorage.setItem('lvl4', lvl4_php);
+            localStorage.setItem('lvl5', lvl5_php);
+            localStorage.setItem('lvl6', lvl6_php);
+            localStorage.setItem('lvl7', lvl7_php);
         </script>
     <?php endif; ?>
     <script src="logic.js"></script>

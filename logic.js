@@ -6,27 +6,37 @@ let lvl0 = parseInt(localStorage.getItem('lvl0')) || 0; // Trening
 let lvl1 = parseInt(localStorage.getItem('lvl1')) || 0; // Błogosławieństwo
 let lvl2 = parseInt(localStorage.getItem('lvl2')) || 0; // Ninja
 let lvl3 = parseInt(localStorage.getItem('lvl3')) || 0; // Miecz
+let lvl4 = parseInt(localStorage.getItem('lvl4')) || 0; // Autoclicker
+let lvl5 = parseInt(localStorage.getItem('lvl5')) || 0; // Lucky Charm (crit chance)
+let lvl6 = parseInt(localStorage.getItem('lvl6')) || 0; // Discount
+let lvl7 = parseInt(localStorage.getItem('lvl7')) || 0; // Golden Sword
 
 // Dynamiczne przeliczanie statystyk na start na podstawie wczytanych poziomów
-let dodawanie = 1 + (lvl0 * 1) + (lvl3 * 5);
+let dodawanie = 1 + (lvl0 * 1) + (lvl3 * 5) + (lvl7 * 20);
 let mnozenie = 1.0 + (lvl1 * 0.1);
-let baseCps = 0 + (lvl2 * 1);
+let baseCps = 0 + (lvl2 * 1) + (lvl4 * 5);
+let critChance = lvl5 * 0.02; // 2% per level
+let costDiscount = Math.pow(0.95, lvl6); // 5% discount per level multiplicative
 
 // Ceny bazowe ulepszeń
 const baseCost0 = 10;
 const baseCost1 = 100;
 const baseCost2 = 500;
 const baseCost3 = 1000;
+const baseCost4 = 2500; // Autoclicker
+const baseCost5 = 800;  // Lucky Charm
+const baseCost6 = 1500; // Discount
+const baseCost7 = 3000; // Golden Sword
 
 function getCostAddings(baseCost, level) {
-    return Math.round(baseCost * Math.pow(3, level));
+    return Math.max(1, Math.round(baseCost * Math.pow(3, level) * costDiscount));
 }
 function getCostMnozenie(baseCost, level) {
-    return Math.round(baseCost * Math.pow(6, level));
+    return Math.max(1, Math.round(baseCost * Math.pow(6, level) * costDiscount));
 }
 
 const ulepszenia = [];
-for (let i = 0; i < 4; i++) ulepszenia.push(document.createElement('button'));
+for (let i = 0; i < 8; i++) ulepszenia.push(document.createElement('button'));
 const counter = document.getElementById('score-counter');
 const clickTarget = document.getElementById('click-target');
 const upgradesContainer = document.getElementById("upgrades-container");
@@ -51,6 +61,22 @@ function updateButtonTexts() {
     let profit3_now = (dodawanie * mnozenie).toFixed(2);
     let profit3_next = ((dodawanie + 5) * mnozenie).toFixed(2);
     ulepszenia[3].textContent = `⚔️ Miecz z czarnej stali (${profit3_now} ➔ ${profit3_next}/klik) [Poz. ${lvl3}] | 💰 Koszt: ${getCostAddings(baseCost3, lvl3).toFixed(2)} Yen`;
+
+    let profit4_now = (baseCps * mnozenie).toFixed(2);
+    let profit4_next = ((baseCps + 5) * mnozenie).toFixed(2);
+    ulepszenia[4].textContent = `🤖 Autoclicker (${profit4_now} ➔ ${profit4_next}/sek) [Poz. ${lvl4}] | 💰 Koszt: ${getCostAddings(baseCost4, lvl4).toFixed(2)} Yen`;
+
+    let profit5_now = Math.round(critChance * 100) + '%';
+    let profit5_next = Math.round((lvl5 + 1) * 2) + '%';
+    ulepszenia[5].textContent = `🍀 Lucky Charm (${profit5_now} ➔ ${profit5_next} szansa kryt.) [Poz. ${lvl5}] | 💰 Koszt: ${getCostAddings(baseCost5, lvl5).toFixed(2)} Yen`;
+
+    let profit6_now = Math.round((1 - costDiscount) * 100) + '%';
+    let profit6_next = Math.round((1 - Math.pow(0.95, lvl6 + 1)) * 100) + '%';
+    ulepszenia[6].textContent = `🛍️ Discount (Obniża koszty) (${profit6_now} ➔ ${profit6_next}) [Poz. ${lvl6}] | 💰 Koszt: ${getCostAddings(baseCost6, lvl6).toFixed(2)} Yen`;
+
+    let profit7_now = (dodawanie * mnozenie).toFixed(2);
+    let profit7_next = ((dodawanie + 20) * mnozenie).toFixed(2);
+    ulepszenia[7].textContent = `⚜️ Złoty Miecz (${profit7_now} ➔ ${profit7_next}/klik) [Poz. ${lvl7}] | 💰 Koszt: ${getCostAddings(baseCost7, lvl7).toFixed(2)} Yen`;
 }
 
 // Sprawdzenie na start (gdy gracz odświeża stronę z wczytanym już stanem)
@@ -70,10 +96,30 @@ if (score >= 1000 || lvl3 > 0) {
     ulepszenia[3].id = 'id3';
     upgradesContainer.appendChild(ulepszenia[3]);
 }
+if (score >= 2500 || lvl4 > 0) {
+    ulepszenia[4].id = 'id4';
+    upgradesContainer.appendChild(ulepszenia[4]);
+}
+if (score >= 800 || lvl5 > 0) {
+    ulepszenia[5].id = 'id5';
+    upgradesContainer.appendChild(ulepszenia[5]);
+}
+if (score >= 1500 || lvl6 > 0) {
+    ulepszenia[6].id = 'id6';
+    upgradesContainer.appendChild(ulepszenia[6]);
+}
+if (score >= 3000 || lvl7 > 0) {
+    ulepszenia[7].id = 'id7';
+    upgradesContainer.appendChild(ulepszenia[7]);
+}
 updateButtonTexts();
 
 clickTarget.addEventListener('click', () => {
-    score += (dodawanie * mnozenie);
+    let gain = (dodawanie * mnozenie);
+    if (Math.random() < critChance) {
+        gain = gain * 2; // krytyczne trafienie daje podwójne Yeny
+    }
+    score += gain;
     counter.textContent = score.toFixed(2);
     localStorage.setItem("yenScore", score);
     
@@ -89,6 +135,22 @@ clickTarget.addEventListener('click', () => {
     if(score >= 1000 && !document.getElementById('id3')){
         ulepszenia[3].id = 'id3';
         upgradesContainer.appendChild(ulepszenia[3]);
+    }
+    if(score >= 2500 && !document.getElementById('id4')){
+        ulepszenia[4].id = 'id4';
+        upgradesContainer.appendChild(ulepszenia[4]);
+    }
+    if(score >= 800 && !document.getElementById('id5')){
+        ulepszenia[5].id = 'id5';
+        upgradesContainer.appendChild(ulepszenia[5]);
+    }
+    if(score >= 1500 && !document.getElementById('id6')){
+        ulepszenia[6].id = 'id6';
+        upgradesContainer.appendChild(ulepszenia[6]);
+    }
+    if(score >= 3000 && !document.getElementById('id7')){
+        ulepszenia[7].id = 'id7';
+        upgradesContainer.appendChild(ulepszenia[7]);
     }
     
     updateButtonTexts();
@@ -159,6 +221,74 @@ ulepszenia[3].addEventListener('click', () => {
         showErrorToast();
     }
 });
+
+// Autoclicker
+ulepszenia[4].addEventListener('click', () => {
+    let currentCost = getCostAddings(baseCost4, lvl4);
+    if (score >= currentCost) {
+        score -= currentCost;
+        lvl4++;
+        baseCps += 5;
+
+        counter.textContent = score.toFixed(2);
+        localStorage.setItem("yenScore", score);
+        localStorage.setItem("lvl4", lvl4);
+        updateButtonTexts();
+    } else {
+        showErrorToast();
+    }
+});
+
+// Lucky Charm (crit chance)
+ulepszenia[5].addEventListener('click', () => {
+    let currentCost = getCostAddings(baseCost5, lvl5);
+    if (score >= currentCost) {
+        score -= currentCost;
+        lvl5++;
+        critChance = lvl5 * 0.02;
+
+        counter.textContent = score.toFixed(2);
+        localStorage.setItem("yenScore", score);
+        localStorage.setItem("lvl5", lvl5);
+        updateButtonTexts();
+    } else {
+        showErrorToast();
+    }
+});
+
+// Discount
+ulepszenia[6].addEventListener('click', () => {
+    let currentCost = getCostAddings(baseCost6, lvl6);
+    if (score >= currentCost) {
+        score -= currentCost;
+        lvl6++;
+        costDiscount = Math.pow(0.95, lvl6);
+
+        counter.textContent = score.toFixed(2);
+        localStorage.setItem("yenScore", score);
+        localStorage.setItem("lvl6", lvl6);
+        updateButtonTexts();
+    } else {
+        showErrorToast();
+    }
+});
+
+// Golden Sword
+ulepszenia[7].addEventListener('click', () => {
+    let currentCost = getCostAddings(baseCost7, lvl7);
+    if (score >= currentCost) {
+        score -= currentCost;
+        lvl7++;
+        dodawanie += 20;
+
+        counter.textContent = score.toFixed(2);
+        localStorage.setItem("yenScore", score);
+        localStorage.setItem("lvl7", lvl7);
+        updateButtonTexts();
+    } else {
+        showErrorToast();
+    }
+});
 function showErrorToast() {
     const toast = document.getElementById('toast-notification');
     toast.classList.add('show');
@@ -186,7 +316,11 @@ if (isUserLoggedIn) {
             lvl0: parseInt(localStorage.getItem('lvl0')) || 0,
             lvl1: parseInt(localStorage.getItem('lvl1')) || 0,
             lvl2: parseInt(localStorage.getItem('lvl2')) || 0,
-            lvl3: parseInt(localStorage.getItem('lvl3')) || 0
+            lvl3: parseInt(localStorage.getItem('lvl3')) || 0,
+            lvl4: parseInt(localStorage.getItem('lvl4')) || 0,
+            lvl5: parseInt(localStorage.getItem('lvl5')) || 0,
+            lvl6: parseInt(localStorage.getItem('lvl6')) || 0,
+            lvl7: parseInt(localStorage.getItem('lvl7')) || 0
         };
 
         return JSON.stringify({
