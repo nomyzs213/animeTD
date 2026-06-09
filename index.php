@@ -63,7 +63,10 @@ if($wyloguj) {
             </ol>
         </aside>
     </div>
-    <div id="toast-notification" class="toast">Nie masz wystarczająco Yenów!</div>
+    <div id="toast-notification" class="toast">
+        <span class="toast-message">Nie masz wystarczająco Yenów!</span>
+        <button id="toast-close" class="toast-close" aria-label="Zamknij">×</button>
+    </div>
     <?php if(isset($_SESSION["user_id"])): ?>
         <?php
         require 'config_db.php';
