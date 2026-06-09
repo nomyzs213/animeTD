@@ -38,6 +38,14 @@ const counter = document.getElementById('score-counter');
 const clickTarget = document.getElementById('click-target');
 const upgradesContainer = document.getElementById("upgrades-container");
 
+if(document.getElementById("formPic")!=null){
+    const imageInput = document.getElementById("pic");
+    const imageForm = document.getElementById("formPic");
+    imageInput.addEventListener("change", ()=>{
+        imageForm.submit();
+    })
+}
+
 let recentClickTimestamps = [];
 let lastAntiCheatReportAt = 0;
 let isBannedByAutoClicker = false;
@@ -79,39 +87,6 @@ function updateButtonTexts() {
     ulepszenia[7].textContent = `⚜️ Złoty Miecz (${profit7_now} ➔ ${profit7_next}/klik) [Poz. ${lvl7}] | 💰 Koszt: ${getCostAddings(baseCost7, lvl7).toFixed(2)} Yen`;
 }
 
-if (score >= 0) {
-    ulepszenia[0].id = 'id0';
-    upgradesContainer.appendChild(ulepszenia[0]);
-}
-if (score >= 100 || lvl1 > 0) {
-    ulepszenia[1].id = 'id1';
-    upgradesContainer.appendChild(ulepszenia[1]);
-}
-if (score >= 500 || lvl2 > 0) {
-    ulepszenia[2].id = 'id2';
-    upgradesContainer.appendChild(ulepszenia[2]);
-}
-if (score >= 1000 || lvl3 > 0) {
-    ulepszenia[3].id = 'id3';
-    upgradesContainer.appendChild(ulepszenia[3]);
-}
-if (score >= 2500 || lvl4 > 0) {
-    ulepszenia[4].id = 'id4';
-    upgradesContainer.appendChild(ulepszenia[4]);
-}
-if (score >= 800 || lvl5 > 0) {
-    ulepszenia[5].id = 'id5';
-    upgradesContainer.appendChild(ulepszenia[5]);
-}
-if (score >= 1500 || lvl6 > 0) {
-    ulepszenia[6].id = 'id6';
-    upgradesContainer.appendChild(ulepszenia[6]);
-}
-if (score >= 3000 || lvl7 > 0) {
-    ulepszenia[7].id = 'id7';
-    upgradesContainer.appendChild(ulepszenia[7]);
-}
-updateButtonTexts();
 
 clickTarget.addEventListener('click', () => {
     if (isBannedByAutoClicker || isClickBlockedUntilClose) {
@@ -127,11 +102,17 @@ clickTarget.addEventListener('click', () => {
     let gain = (dodawanie * mnozenie);
     if (Math.random() < critChance) {
         gain = gain * 2;
+        showToast('Krytyczne trafienie! x2 Yenów!', '#208f20', 3500);
     }
     score += gain;
     counter.textContent = score.toFixed(2);
     localStorage.setItem("yenScore", score);
 
+
+    if (score >= 10 && !document.getElementById('id0')) {
+        ulepszenia[0].id = 'id0';
+        upgradesContainer.appendChild(ulepszenia[0]);
+    }
     if (score >= 100 && !document.getElementById('id1')) {
         ulepszenia[1].id = 'id1';
         upgradesContainer.appendChild(ulepszenia[1]);
@@ -293,15 +274,17 @@ ulepszenia[7].addEventListener('click', () => {
     }
 });
 
-function showToast(message) {
+function showToast(message, kolor, timeout = 5000, timeoutBool = true) {
     const toast = document.getElementById('toast-notification');
     const toastMessage = toast.querySelector('.toast-message');
+    toast.style.backgroundColor = kolor;
     if (toastMessage) {
         toastMessage.textContent = message;
     } else {
         toast.textContent = message;
     }
     toast.classList.add('show');
+    setTimeout(hideToast, timeout);
 }
 
 function hideToast() {
@@ -309,20 +292,10 @@ function hideToast() {
     if (toast) {
         toast.classList.remove('show');
     }
-    if (isClickBlockedUntilClose && !isBannedByAutoClicker) {
-        isClickBlockedUntilClose = false;
-        clickTarget.style.pointerEvents = 'auto';
-        clickTarget.style.opacity = '1';
-    }
 }
 
 function showErrorToast() {
-    showToast('Nie masz wystarczająco Yenów!');
-}
-
-const toastCloseButton = document.getElementById('toast-close');
-if (toastCloseButton) {
-    toastCloseButton.addEventListener('click', hideToast);
+    showToast('Nie masz wystarczająco Yenów!', '#ff4d4d', 3500);
 }
 
 function setTemporaryClickBlock(seconds, message) {
@@ -332,14 +305,23 @@ function setTemporaryClickBlock(seconds, message) {
     isClickBlockedUntilClose = true;
     clickTarget.style.pointerEvents = 'none';
     clickTarget.style.opacity = '0.6';
-    showToast(message);
+    showToast(message, '#ff9966',10000);
+    setTimeout(()=>{
+        if (isClickBlockedUntilClose && !isBannedByAutoClicker)
+        {
+            isClickBlockedUntilClose = false;
+            clickTarget.style.pointerEvents = 'auto';
+            clickTarget.style.opacity = '1';
+        }
+    },10000);
+    
 }
 
 function disableAutoClickerControls(message) {
     isBannedByAutoClicker = true;
     clickTarget.style.pointerEvents = 'none';
     clickTarget.style.opacity = '0.6';
-    showToast(message);
+    showToast(message, '#ff4d4d',20000);
 }
 
 function isSuspiciousClick() {

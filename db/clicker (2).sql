@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Час створення: Чрв 08 2026 р., 12:45
+-- Час створення: Чрв 09 2026 р., 23:29
 -- Версія сервера: 10.4.32-MariaDB
 -- Версія PHP: 8.2.12
 
@@ -18,8 +18,31 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- База даних: `yurii_animeclicker`
+-- База даних: `clicker`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблиці `anti_autoclicker`
+--
+
+CREATE TABLE `anti_autoclicker` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `warning_count` int(11) NOT NULL DEFAULT 0,
+  `ban_stage` int(11) NOT NULL DEFAULT 0,
+  `ban_expires_at` datetime DEFAULT NULL,
+  `last_warning_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Дамп даних таблиці `anti_autoclicker`
+--
+
+INSERT INTO `anti_autoclicker` (`id`, `user_id`, `warning_count`, `ban_stage`, `ban_expires_at`, `last_warning_at`) VALUES
+(3, 14, 0, 1, NULL, NULL),
+(4, 11, 0, 0, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -27,20 +50,11 @@ SET time_zone = "+00:00";
 -- Структура таблиці `email_verification_tokens`
 --
 
-CREATE TABLE `users` (
-  `user_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  `username` varchar(160) NOT NULL,
-  `email` varchar(160) NOT NULL,
-  `password_hash` varchar(255) NOT NULL,
-  `verified` tinyint(1) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
 CREATE TABLE `email_verification_tokens` (
-  `id` int(11) PRIMARY KEY AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `token` varchar(64) NOT NULL,
-  `expires_at` datetime NOT NULL,
-  FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`) ON DELETE CASCADE
+  `expires_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -50,7 +64,7 @@ CREATE TABLE `email_verification_tokens` (
 --
 
 CREATE TABLE `highscores` (
-  `score_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `score_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `yens` decimal(24,2) NOT NULL,
   `upgrade_level_1` int(11) NOT NULL DEFAULT 0,
@@ -60,8 +74,7 @@ CREATE TABLE `highscores` (
   `upgrade_level_5` int(11) NOT NULL DEFAULT 0,
   `upgrade_level_6` int(11) NOT NULL DEFAULT 0,
   `upgrade_level_7` int(11) NOT NULL DEFAULT 0,
-  `upgrade_level_8` int(11) NOT NULL DEFAULT 0,
-  FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`) ON DELETE CASCADE
+  `upgrade_level_8` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -69,8 +82,8 @@ CREATE TABLE `highscores` (
 --
 
 INSERT INTO `highscores` (`score_id`, `user_id`, `yens`, `upgrade_level_1`, `upgrade_level_2`, `upgrade_level_3`, `upgrade_level_4`, `upgrade_level_5`, `upgrade_level_6`, `upgrade_level_7`, `upgrade_level_8`) VALUES
-(4, 9, 175.10, 3, 1, 0, 0, 0, 0, 0, 0),
-(5, 10, 369.30, 2, 1, 0, 0, 0, 0, 0, 0);
+(6, 11, 1630.80, 1, 1, 0, 0, 0, 0, 0, 0),
+(7, 14, 209397.60, 6, 3, 0, 4, 0, 2, 3, 3);
 
 -- --------------------------------------------------------
 
@@ -78,14 +91,12 @@ INSERT INTO `highscores` (`score_id`, `user_id`, `yens`, `upgrade_level_1`, `upg
 -- Структура таблиці `users`
 --
 
-CREATE TABLE anti_autoclicker (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  user_id INT NOT NULL UNIQUE,
-  warning_count INT NOT NULL DEFAULT 0,
-  ban_stage INT NOT NULL DEFAULT 0,
-  ban_expires_at DATETIME NULL,
-  last_warning_at DATETIME NULL,
-  FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+CREATE TABLE `users` (
+  `user_id` int(11) NOT NULL,
+  `username` varchar(160) NOT NULL,
+  `email` varchar(160) NOT NULL,
+  `password_hash` varchar(255) NOT NULL,
+  `verified` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -93,12 +104,41 @@ CREATE TABLE anti_autoclicker (
 --
 
 INSERT INTO `users` (`user_id`, `username`, `email`, `password_hash`, `verified`) VALUES
-(9, 'konto', 'yuriyuhman@gmail.com', '$2y$10$FmxE.uTgzDEtQAqbdHooj.eYhucFBjrOtR/UigSPgtDH63XwUZSLe', 1),
-(10, 'konto1', 'ukhman.yuriy@gmail.com', '$2y$10$l26Eh1ck7NPAb4tVvDGOBerxgCj/AAdVHiUZuKo3FH742q1ZjZtRu', 1);
+(11, 'Kolob', 'ukhman.yuriy@gmail.com', '$2y$10$VGV8zUPf2vn2Y3lIwzcVS.5dfnf8YlAnVCM6Qf2fhZODbdinG2Aq2', 1),
+(12, 'piotrn', 'piotrnzsti@gmail.com', '$2y$10$oiW.aTD.v5oLxa5tVfZ8A.KeABhizoghYqbgghYkjBAGZ3nEFCKAS', 1),
+(13, 'nomyzs213', 'zarembaszymon377@gmail.com', '$2y$10$Eay/PSRFExaGoHxPfPGC4OULzFvO1zxEL4cuFEGel9Ue45y.egwSC', 1),
+(14, 'test', 'yuriyuhman@gmail.com', '$2y$10$XguBVi4Q22jJ0Vr1/vuzDu6W5935ftIl1VOAl7I..T3HxvUgg5/NW', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблиці `user_images`
+--
+
+CREATE TABLE `user_images` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `imagePath` varchar(256) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Дамп даних таблиці `user_images`
+--
+
+INSERT INTO `user_images` (`id`, `user_id`, `imagePath`) VALUES
+(1, 11, 'click.png'),
+(2, 14, 'click.png');
 
 --
 -- Індекси збережених таблиць
 --
+
+--
+-- Індекси таблиці `anti_autoclicker`
+--
+ALTER TABLE `anti_autoclicker`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `user_id` (`user_id`);
 
 --
 -- Індекси таблиці `email_verification_tokens`
@@ -124,30 +164,55 @@ ALTER TABLE `users`
   ADD UNIQUE KEY `email` (`email`);
 
 --
+-- Індекси таблиці `user_images`
+--
+ALTER TABLE `user_images`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
 -- AUTO_INCREMENT для збережених таблиць
 --
+
+--
+-- AUTO_INCREMENT для таблиці `anti_autoclicker`
+--
+ALTER TABLE `anti_autoclicker`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT для таблиці `email_verification_tokens`
 --
 ALTER TABLE `email_verification_tokens`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT для таблиці `highscores`
 --
 ALTER TABLE `highscores`
-  MODIFY `score_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `score_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT для таблиці `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
+--
+-- AUTO_INCREMENT для таблиці `user_images`
+--
+ALTER TABLE `user_images`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Обмеження зовнішнього ключа збережених таблиць
 --
+
+--
+-- Обмеження зовнішнього ключа таблиці `anti_autoclicker`
+--
+ALTER TABLE `anti_autoclicker`
+  ADD CONSTRAINT `anti_autoclicker_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
 
 --
 -- Обмеження зовнішнього ключа таблиці `email_verification_tokens`
@@ -160,6 +225,12 @@ ALTER TABLE `email_verification_tokens`
 --
 ALTER TABLE `highscores`
   ADD CONSTRAINT `highscores_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
+
+--
+-- Обмеження зовнішнього ключа таблиці `user_images`
+--
+ALTER TABLE `user_images`
+  ADD CONSTRAINT `user_images_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

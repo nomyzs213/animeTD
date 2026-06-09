@@ -8,6 +8,100 @@ if($wyloguj) {
     header("Location: index.php");
     exit();
 }
+
+if(!empty($_FILES))
+{
+    $imagename = $_FILES['pic']['name'];
+    $imagetype = $_FILES['pic']['type'];
+    $imageerror = $_FILES['pic']['error'];
+    $imagetemp = $_FILES['pic']['tmp_name'];
+    if(strlen($imagename)>240){
+        $komunikat="Zbyt długa nazwa pliku!";
+    }else{
+        if ($imageerror !== UPLOAD_ERR_OK){
+            die("Wystąpił błąd podczas przesyłania pliku! Kod błędu: " . $imageerror);
+        }
+        $imagePath = "images/".$imagename;
+        if($imagetype!="image/jpg" && $imagetype!="image/png" && $imagetype!="image/svg+xml" && $imagetype!="image/jpeg"){
+            $komunikat="Zły typ pliku!";
+        }
+        else{
+            if(is_uploaded_file($imagetemp)) {
+                if(move_uploaded_file($imagetemp, $imagePath)) {
+                    $imageSTMT = $conn->prepare("SELECT imagePath FROM user_images WHERE user_id=?");
+                    $imageSTMT->bind_param("i",$_SESSION["user_id"]);
+                    try{
+                        $imageSTMT->execute();
+                        $imageSTMT->store_result();
+                        $numberOfResults = $imageSTMT->num_rows();
+                        if($numberOfResults==0){
+                            $imageSTMT = $conn->prepare("INSERT INTO user_images (user_id, imagePath) VALUES (?,?)");
+                            $imageSTMT->bind_param("is",$_SESSION["user_id"],$imagePath);
+                            $imageSTMT->execute();
+                        }else{
+                            $imageSTMT = $conn->prepare("UPDATE user_images SET imagePath=? WHERE user_id=?");
+                            $imageSTMT->bind_param("si",$imagePath,$_SESSION["user_id"]);
+                            $imageSTMT->execute();
+                        }
+                    }catch(mysqli_sql_exception $e){
+                        $komunikat="Nie udało się zapisać do bazy danych!";
+                    }
+                    $imageSTMT->close();
+                }
+                else {
+                    $komunikat = "Błąd podczas zapisywania pliku!";
+                }
+            }
+            else {
+                $komunikat="Nie udało się przesłać plik!";
+            }
+        }
+    }
+}
+$resetImage = $_POST['resetImage'] ?? 0;
+$clickpng = "click.png";
+if($resetImage){
+    $imageSTMT = $conn->prepare("SELECT imagePath FROM user_images WHERE user_id=?");
+    $imageSTMT->bind_param("i",$_SESSION["user_id"]);
+    try{
+            $imageSTMT->execute();
+            $imageSTMT->store_result();
+            $numberOfResults = $imageSTMT->num_rows();
+        if($numberOfResults==0){
+            $imageSTMT = $conn->prepare("INSERT INTO user_images (user_id, imagePath) VALUES (?,?)");
+            $imageSTMT->bind_param("is",$_SESSION["user_id"],$clickpng);
+            $imageSTMT->execute();
+        }else{
+            $imageSTMT = $conn->prepare("UPDATE user_images SET imagePath=? WHERE user_id=?");
+            $imageSTMT->bind_param("si",$clickpng,$_SESSION["user_id"]);
+            $imageSTMT->execute();
+        }
+    }catch(mysqli_sql_exception $e){
+        $komunikat="Nie udało się zapisać do bazy danych!";
+    }
+    $imageSTMT->close();
+}
+if(isset($_SESSION["user_id"])){
+    $stmt = $conn->prepare("SELECT imagePath FROM user_images WHERE user_id=?");
+    $stmt->bind_param("i",$_SESSION["user_id"]);
+    $stmt->bind_result($path);
+    try{
+        $stmt->execute();
+        $stmt->store_result();
+        if($stmt->num_rows()==1){
+            $stmt->fetch();
+            $sciezka = $path;
+        }else{
+            $sciezka = "click.png";
+        }
+    }catch(mysqli_sql_exception $e){
+        $komunikat = "Problem z bazą danych";
+        $sciezka = "click.png";
+    }
+    $stmt->close();
+}else{
+    $sciezka = "click.png";
+}
 ?>
 <!DOCTYPE html>
 <html lang="pl">
@@ -52,8 +146,21 @@ if($wyloguj) {
                 <a class="login-btn" href="login/login.php">Zaloguj się</a>
             </div>
             <?php endif; ?>
-            <div class="anime-click-button" id="click-target">
-                </div>
+            <img class="anime-click-button" id="click-target" src="<?php echo htmlspecialchars($sciezka,ENT_QUOTES,"UTF-8")?>">
+            </img>
+<?php if(isset($_SESSION["user_id"])):?>
+    <form action="index.php" method="post" enctype="multipart/form-data" id="formPic" class="image-management-form">
+        <label for="pic" class="custom-file-upload">
+            <span>Wybierz nowy obrazek</span>
+        </label>
+        <input type="file" id="pic" name="pic">
+    </form>
+    
+    <form action="index.php" method="post" class="hiddenResetImage">
+        <input type="hidden" value="1" id="resetImage" name="resetImage">
+        <input type="submit" value="Zresetuj obrazek" class="reset-image-btn">
+    </form>
+<?php endif ?>
         </main>
         
         <aside class="upgrades-section">
@@ -65,11 +172,9 @@ if($wyloguj) {
     </div>
     <div id="toast-notification" class="toast">
         <span class="toast-message">Nie masz wystarczająco Yenów!</span>
-        <button id="toast-close" class="toast-close" aria-label="Zamknij">×</button>
     </div>
     <?php if(isset($_SESSION["user_id"])): ?>
         <?php
-        require 'config_db.php';
         $stmt = $conn->prepare("SELECT yens, upgrade_level_1, upgrade_level_2, upgrade_level_3, upgrade_level_4, upgrade_level_5, upgrade_level_6, upgrade_level_7, upgrade_level_8 FROM highscores WHERE user_id = ?");
         $stmt->bind_param("i", $_SESSION["user_id"]);
         $stmt->execute();
@@ -87,7 +192,6 @@ if($wyloguj) {
             "lvl7" => $gameData["upgrade_level_8"] ?? 0
         ];
         $stmt->close();
-        $conn->close();
         ?>
         <script>
             let savedScore = <?php echo htmlspecialchars((float)$score, ENT_QUOTES, 'UTF-8'); ?>;
@@ -111,5 +215,15 @@ if($wyloguj) {
         </script>
     <?php endif; ?>
     <script src="logic.js"></script>
+    <?php if(!empty($komunikat)):?>
+        <script>
+            const imageInput = document.getElementById("pic");
+            imageInput.value="";
+            showToast("<?= $komunikat ?>","#ff4d4d",4000);
+        </script>
+    <?php endif?>
 </body>
 </html>
+<?php
+    $conn->close();
+?>

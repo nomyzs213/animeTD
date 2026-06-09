@@ -56,11 +56,7 @@ body {
     height: 500px;
     max-width: 85vw;
     max-height: 55vh;
-    background-image: url('click.png');
-    background-size: cover;
-    background-position: center;
     border-radius: 16px;
-    background-repeat: no-repeat;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -335,14 +331,191 @@ body {
         font-size: 18px;
     }
 
-    .logout-btn, .login-container-game .login-btn {
-        position: absolute;
+    .login-container-game,
+    .logout-btn {
+        position: fixed;
         top: 12px;
-        left: auto;
         right: 12px;
+        left: auto;
+        z-index: 1000;
+    }
+
+    .logout-btn, 
+    .login-container-game .login-btn {
+        position: static;
         height: 34px;
         padding: 0 14px;
         font-size: 12px;
+    }
+
+    .login-box .login-btn {
+        position: static;
+        width: 100%;
+        height: auto;
+        padding: 14px;
+        font-size: 16px;
+    }
+
+    .anime-click-button {
+        width: 300px;
+        height: 340px;
+    }
+
+    .upgrades-section {
+        flex: none;
+        height: 35vh;
+        border-left: none;
+        border-top: 2px solid #ced6e0;
+        padding: 15px;
+    }
+
+    .login-box {
+        padding: 30px 20px;
+    }
+
+    .login-box h1 {
+        font-size: 22px;
+    }
+}
+.image-management-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 15px 0 10px 0;
+    width: 100%;
+}
+
+.image-management-form input[type="file"] {
+    display: none;
+}
+
+.custom-file-upload {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #7bed9f;
+    color: #1e3799;
+    font-weight: 600;
+    font-size: 14px;
+    height: 44px;
+    padding: 0 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease-in-out;
+    user-select: none;
+    width: 100%;
+    max-width: 300px;
+    text-align: center;
+    border: none;
+}
+
+.custom-file-upload:hover {
+    background-color: #59ac73;
+    transform: scale(1.02);
+}
+
+.custom-file-upload:active {
+    background-color: #428f59;
+    transform: scale(0.98);
+}
+
+.hiddenResetImage {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.reset-image-btn {
+    background-color: transparent;
+    color: #57606f;
+    border: none;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: color 0.2s ease-in-out, transform 0.1s;
+    padding: 8px 16px;
+    max-width: 100%;
+    text-align: center;
+}
+
+.reset-image-btn:hover {
+    color: #ff6b81;
+    text-decoration: underline;
+}
+
+.reset-image-btn:active {
+    transform: scale(0.95);
+}
+
+@media (max-width: 768px) {
+    .custom-file-upload {
+        height: 34px;
+        padding: 0 14px;
+        font-size: 12px;
+        max-width: 300px;
+    }
+    
+    .reset-image-btn {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+}
+@media (max-width: 768px) {
+    .game-container {
+        flex-direction: column;
+        overflow-y: auto;
+    }
+
+    body {
+        overflow: auto;
+    }
+
+    .clicker-section {
+        flex: none;
+        height: 65vh;
+        padding: 60px 10px 10px 10px;
+    }
+
+    .score-container {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        bottom: auto;
+        padding: 6px 12px;
+    }
+
+    .score-container h2 {
+        font-size: 18px;
+    }
+    
+    .login-container-game,
+    .logout-btn {
+        position: fixed !important;
+        top: 12px !important;
+        right: 12px !important;
+        left: auto !important;
+        z-index: 10005 !important;
+    }
+
+    .logout-btn, 
+    .login-container-game .login-btn {
+        height: 34px !important;
+        padding: 0 14px !important;
+        font-size: 12px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .login-box .login-btn {
+        position: static;
+        width: 100%;
+        height: auto;
+        padding: 14px;
+        font-size: 16px;
     }
 
     .anime-click-button {
